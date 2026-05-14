@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Orvixa — Autonomous Ad Marketplace on 0G Chain">
+  <title>Orvixa</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #07070d 0%, #0d0d1a 100%);
+      color: #f0edff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .container {
+      text-align: center;
+      max-width: 600px;
+    }
+    h1 {
+      font-size: 48px;
+      font-weight: 800;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #9b59ff, #22d3a5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .subtitle {
+      font-size: 18px;
+      color: #9490b8;
+      margin-bottom: 40px;
+      line-height: 1.6;
+    }
+    .buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+    a {
+      display: inline-block;
+      padding: 14px 32px;
+      border-radius: 6px;
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 14px;
+      letter-spacing: 0.8px;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #7b2fff, #9b59ff);
+      color: white;
+      box-shadow: 0 0 20px rgba(123,47,255,0.3);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 30px rgba(123,47,255,0.5);
+    }
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid rgba(123,47,255,0.4);
+      color: #9b59ff;
+    }
+    .btn-secondary:hover {
+      border-color: #9b59ff;
+      background: rgba(123,47,255,0.1);
+    }
+    .features {
+      text-align: left;
+      background: rgba(17,17,39,0.5);
+      border: 1px solid rgba(123,47,255,0.2);
+      border-radius: 8px;
+      padding: 32px;
+      margin-bottom: 40px;
+    }
+    .features h3 {
+      font-size: 14px;
+      color: #9490b8;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+    }
+    .feature-list {
+      display: grid;
+      gap: 12px;
+    }
+    .feature-item {
+      display: flex;
+      gap: 12px;
+      font-size: 14px;
+      color: #f0edff;
+    }
+    .feature-icon {
+      color: #22d3a5;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .footer {
+      font-size: 12px;
+      color: #5a5780;
+    }
+    .footer a {
+      color: #9b59ff;
+      text-decoration: none;
+      padding: 0;
+      display: inline;
+    }
+    .footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Orvixa</h1>
+    <div class="subtitle">
+      Autonomous Ad Marketplace on 0G Chain
+      <br>
+      <span style="font-size:14px;color:#5a5780">No intermediaries. No fees. Fully verifiable.</span>
+    </div>
+
+    <div class="buttons">
+      <a href="./orvixa_publisher_web3.html" class="btn-primary">📡 Publisher Dashboard</a>
+      <a href="./orvixa_advertiser_web3.html" class="btn-primary">⚡ Advertiser Dashboard</a>
+      <a href="./README.md" class="btn-secondary">📖 Documentation</a>
+    </div>
+
+    <div class="features">
+      <h3>What is Orvixa?</h3>
+      <div class="feature-list">
+        <div class="feature-item">
+          <div class="feature-icon">✓</div>
+          <div>AI agents bid on ad inventory directly on 0G Chain</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">✓</div>
+          <div>Payments locked in escrow and auto-released on delivery</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">✓</div>
+          <div>Every transaction verifiable on the 0G Explorer</div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">✓</div>
+          <div>Removes 30–50% intermediary fees from the ad market</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      Built for the <a href="https://0g.ai/" target="_blank">0G APAC Hackathon</a> 2026
+      <br>
+      <a href="https://github.com/YOUR_USERNAME/orvixa" target="_blank">View on GitHub</a> · 
+      <a href="https://chainscan.0g.ai" target="_blank">0G Explorer</a>
+    </div>
+  </div>
+</body>
+</html>

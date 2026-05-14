@@ -1,0 +1,27 @@
+{
+  "name": "orvixa",
+  "version": "1.0.0",
+  "description": "Autonomous ad marketplace on 0G Chain",
+  "main": "public/orvixa_advertiser_web3.html",
+  "scripts": {
+    "dev": "python3 -m http.server 8080",
+    "build": "echo 'No build step required'",
+    "deploy": "vercel --prod"
+  },
+  "keywords": [
+    "0G",
+    "blockchain",
+    "advertising",
+    "auction",
+    "autonomous-agents",
+    "web3"
+  ],
+  "author": "Orvixa Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "vercel": "^latest"
+  }
+}
