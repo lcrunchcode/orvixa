@@ -622,7 +622,7 @@ function injectAdvAgentLog() {
   const panel = document.createElement("div");
   panel.id = "agent-log-panel";
   panel.style.cssText = "position:fixed;bottom:24px;left:24px;z-index:9998;width:400px;max-height:320px;overflow-y:auto;background:#0d0d1a;border:1px solid rgba(123,47,255,0.45);border-radius:4px;padding:16px 18px;box-shadow:0 0 28px rgba(123,47,255,0.18);font-family:'JetBrains Mono',monospace;font-size:11px;color:#9490b8;";
-  panel.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><span style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:800;color:#9b59ff">🤖 Advertiser Agent Log</span><span id="adv-status-badge" style="padding:3px 10px;border-radius:2px;font-size:10px;font-weight:700;background:rgba(123,47,255,0.12);border:1px solid rgba(123,47,255,0.3);color:#9b59ff">IDLE</span></div><div id="adv-log-entries"></div>`;
+  panel.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><span style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:800;color:#9b59ff">Advertiser Agent Log</span><span id="adv-status-badge" style="padding:3px 10px;border-radius:2px;font-size:10px;font-weight:700;background:rgba(123,47,255,0.12);border:1px solid rgba(123,47,255,0.3);color:#9b59ff">IDLE</span></div><div id="adv-log-entries"></div>`;
   document.body.appendChild(panel);
 }
 
