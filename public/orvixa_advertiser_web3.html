@@ -226,7 +226,7 @@
       </div>
       <div class="verified-badge">Verified on OG Chain</div>
       <div id="wc-wrapper" class="wc-wrapper">
-        <button id="wc-connect-btn" class="wc-btn" onclick="connectWalletAndStartAdvAgent()">⚡ Connect Wallet</button>
+        <button id="wc-connect-btn" class="wc-btn" onclick="connectWalletAndStartAdvAgent()"> Connect Wallet</button>
         <div id="wc-connected-ui" class="wc-connected-ui" style="display:none;">
           <div class="wc-pill" id="wc-address-pill">...</div>
           <button id="wc-disconnect-btn" class="wc-btn wc-btn-danger" onclick="wcDisconnect()">✕</button>
@@ -419,7 +419,7 @@ let wcAddress = null;
 async function wcConnect() {
   if (!window.ethereum) {
     if (location.protocol === "file:") {
-      alert("⚠️ File:// protocol detected!\nFix:\n  python3 -m http.server 8080");
+      alert("File:// protocol detected!\nFix:\n  python3 -m http.server 8080");
     } else {
       alert("Wallet provider not found. Please install MetaMask.");
     }
@@ -702,7 +702,7 @@ async function runAdvertiserAgent() {
       if (document.getElementById("cb-balance")) document.getElementById("cb-balance").textContent = parseFloat(ethers.formatEther(balWei)).toFixed(3) + " OG";
     } catch(e) {}
 
-    advLog("✅ Advertiser cycle complete: Register → Bid → Lock Escrow", "success");
+    advLog(" Advertiser cycle complete: Register → Bid → Lock Escrow", "success");
     advRunning = false;
   } catch(err) {
     if (err.code === 4001) {
