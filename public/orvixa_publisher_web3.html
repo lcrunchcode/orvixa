@@ -233,7 +233,7 @@
       </div>
       <div class="verified-badge">Verified on OG Chain</div>
       <div id="wc-wrapper" class="wc-wrapper">
-        <button id="wc-connect-btn" class="wc-btn" onclick="connectWalletAndStartAgent()">⚡ Connect Wallet</button>
+        <button id="wc-connect-btn" class="wc-btn" onclick="connectWalletAndStartAgent()">Connect Wallet</button>
         <div id="wc-connected-ui" class="wc-connected-ui" style="display:none;">
           <div class="wc-pill" id="wc-address-pill">...</div>
           <button id="wc-disconnect-btn" class="wc-btn wc-btn-danger" onclick="wcDisconnect()">✕</button>
@@ -285,7 +285,7 @@
           <div class="auction-bid-item"><div class="auction-bid-label">Base Price</div><div class="auction-bid-val">0.001 OG</div></div>
         </div>
         <div class="progress-bar"><div class="progress-fill" style="width:45%"></div></div>
-        <div class="auction-footer"><span>⏱ Ends in 4h 12m</span><button class="btn-accept">✓ Accept Highest Bid</button></div>
+        <div class="auction-footer"><span> Ends in 4h 12m</span><button class="btn-accept"> Accept Highest Bid</button></div>
       </div>
     </div>
  
@@ -355,8 +355,8 @@
  
   <div class="settlement-log">
     <div class="card-title" style="margin-bottom:20px"><div class="card-title-icon"></div>On-Chain Settlement Log</div>
-    <div class="log-item"><div class="log-icon">✅</div><div class="log-body"><div class="log-title">Homepage Hero — CryptoApp Inc</div><div class="log-meta">escrow released · 2h ago · tx: 0x9f3a…b821</div></div><div class="log-amount">+0.085 OG</div><div class="log-chain-link">View on 0G →</div></div>
-    <div class="log-item"><div class="log-icon">✅</div><div class="log-body"><div class="log-title">Newsletter Sponsorship — TechStartups</div><div class="log-meta">escrow released · 6h ago · tx: 0x2c7d…4f19</div></div><div class="log-amount">+0.125 OG</div><div class="log-chain-link">View on 0G →</div></div>
+    <div class="log-item"><div class="log-icon"></div><div class="log-body"><div class="log-title">Homepage Hero — CryptoApp Inc</div><div class="log-meta">escrow released · 2h ago · tx: 0x9f3a…b821</div></div><div class="log-amount">+0.085 OG</div><div class="log-chain-link">View on 0G →</div></div>
+    <div class="log-item"><div class="log-icon"></div><div class="log-body"><div class="log-title">Newsletter Sponsorship — TechStartups</div><div class="log-meta">escrow released · 6h ago · tx: 0x2c7d…4f19</div></div><div class="log-amount">+0.125 OG</div><div class="log-chain-link">View on 0G →</div></div>
     <div class="log-item"><div class="log-icon"></div><div class="log-body"><div class="log-title">Sidebar Ad — WebAdvertising Inc</div><div class="log-meta">escrow locked · awaiting delivery · tx: 0xaa5b…9c03</div></div><div class="log-amount" style="color:var(--amber)">0.042 OG</div><div class="log-chain-link">View on 0G →</div></div>
   </div>
 
@@ -452,7 +452,7 @@ let wcAddress = null;
 async function wcConnect() {
   if (!window.ethereum) {
     if (location.protocol === "file:") {
-      alert("⚠️ File:// protocol detected!\nFix:\n  python3 -m http.server 8080");
+      alert(" File:// protocol detected!\nFix:\n  python3 -m http.server 8080");
     } else {
       alert("Wallet provider not found. Please install MetaMask.");
     }
@@ -650,7 +650,7 @@ function injectAgentLog() {
   const panel = document.createElement("div");
   panel.id = "agent-log-panel";
   panel.style.cssText = "position:fixed;bottom:24px;left:24px;z-index:9998;width:400px;max-height:320px;overflow-y:auto;background:#0d0d1a;border:1px solid rgba(34,211,165,0.4);border-radius:4px;padding:16px 18px;box-shadow:0 0 28px rgba(34,211,165,0.15);font-family:'JetBrains Mono',monospace;font-size:11px;color:#9490b8;";
-  panel.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><span style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:800;color:#22d3a5">🤖 Publisher Agent Log</span><span id="agent-status-badge" style="padding:3px 10px;border-radius:2px;font-size:10px;font-weight:700;background:rgba(34,211,165,0.12);border:1px solid rgba(34,211,165,0.3);color:#22d3a5">IDLE</span></div><div id="agent-log-entries"></div>`;
+  panel.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><span style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:800;color:#22d3a5">Publisher Agent Log</span><span id="agent-status-badge" style="padding:3px 10px;border-radius:2px;font-size:10px;font-weight:700;background:rgba(34,211,165,0.12);border:1px solid rgba(34,211,165,0.3);color:#22d3a5">IDLE</span></div><div id="agent-log-entries"></div>`;
   document.body.appendChild(panel);
 }
 
