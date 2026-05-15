@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Orvixa — Advertiser Agent Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<!-- ethers.js loaded in <head> so it is ALWAYS ready before any inline script runs -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.5/ethers.umd.min.js"
         onerror="this.onerror=null;this.src='https://unpkg.com/ethers@6.13.5/dist/ethers.umd.min.js'">
 </script>
@@ -42,29 +41,16 @@
     overflow-x: hidden;
   }
  
-  /* ── Animated grid bg ── */
   body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(123,47,255,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(123,47,255,0.04) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
+    content: ''; position: fixed; inset: 0;
+    background-image: linear-gradient(rgba(123,47,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(123,47,255,0.04) 1px, transparent 1px);
+    background-size: 40px 40px; pointer-events: none; z-index: 0;
   }
  
-  /* ── Ambient glow blobs ── */
   body::after {
-    content: '';
-    position: fixed;
-    top: -200px; left: -200px;
-    width: 600px; height: 600px;
+    content: ''; position: fixed; top: -200px; left: -200px; width: 600px; height: 600px;
     background: radial-gradient(circle, rgba(123,47,255,0.12) 0%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
-    animation: blobFloat 8s ease-in-out infinite;
+    pointer-events: none; z-index: 0; animation: blobFloat 8s ease-in-out infinite;
   }
  
   @keyframes blobFloat {
@@ -74,104 +60,55 @@
  
   .wrap { position: relative; z-index: 1; max-width: 1360px; margin: 0 auto; padding: 24px; }
  
-  /* ── TOPBAR ── */
   .topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 28px;
-    background: rgba(13,13,26,0.8);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    backdrop-filter: blur(20px);
-    margin-bottom: 28px;
-    box-shadow: var(--glow-sm);
+    display: flex; justify-content: space-between; align-items: center; padding: 16px 28px;
+    background: rgba(13,13,26,0.8); border: 1px solid var(--border); border-radius: 4px;
+    backdrop-filter: blur(20px); margin-bottom: 28px; box-shadow: var(--glow-sm);
   }
  
-  .logo {
-    display: flex; align-items: center; gap: 10px;
-    font-size: 22px; font-weight: 800; letter-spacing: -0.5px;
-  }
- 
+  .logo { display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
   .logo-mark {
-    width: 36px; height: 36px;
-    background: linear-gradient(135deg, var(--purple-core), var(--violet));
-    border-radius: 4px;
-    display: grid; place-items: center;
-    font-size: 16px;
-    box-shadow: var(--glow-sm);
+    width: 36px; height: 36px; background: linear-gradient(135deg, var(--purple-core), var(--violet));
+    border-radius: 4px; display: grid; place-items: center; font-size: 16px; box-shadow: var(--glow-sm);
   }
- 
   .logo-name { color: var(--text-bright); }
   .logo-name span { color: var(--purple-glow); }
- 
   .topbar-right { display: flex; align-items: center; gap: 14px; }
  
-  .wallet-pill {
-    display: flex; align-items: center; gap: 8px;
-    padding: 8px 14px;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 2px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    color: var(--text-mid);
-  }
- 
   .wallet-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--green-ok);
-    box-shadow: 0 0 6px var(--green-ok);
-    animation: pulse 2s ease-in-out infinite;
+    width: 8px; height: 8px; border-radius: 50%; background: var(--green-ok);
+    box-shadow: 0 0 6px var(--green-ok); animation: pulse 2s ease-in-out infinite;
   }
  
-  @keyframes pulse {
-    0%,100% { opacity: 1; }
-    50%      { opacity: 0.4; }
-  }
- 
-  .agent-pill {
-    display: flex; align-items: center; gap: 8px;
-    padding: 8px 16px;
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  /* ── NEW WALLETCONNECT UI CSS ── */
+  .wc-wrapper { display: flex; align-items: center; gap: 10px; }
+  .wc-btn {
+    display: flex; align-items: center; gap: 8px; padding: 8px 16px;
     background: linear-gradient(135deg, var(--purple-core), #5b0fd4);
-    border-radius: 2px;
-    font-size: 12px; font-weight: 700;
+    border-radius: 2px; font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px; font-weight: 700; color: var(--text-bright); border: none;
+    cursor: pointer; box-shadow: var(--glow-sm); transition: transform 0.2s, box-shadow 0.2s;
     letter-spacing: 0.5px;
-    box-shadow: var(--glow-sm);
+  }
+  .wc-btn:hover { transform: translateY(-2px); box-shadow: var(--glow-md); }
+  .wc-btn-danger { background: linear-gradient(135deg, #3d0a0a, #6b1010); color: #ff6b6b; padding: 8px 12px; box-shadow: none; }
+  .wc-btn-danger:hover { box-shadow: 0 0 12px rgba(244,63,94,0.3); }
+  .wc-connected-ui { display: flex; align-items: center; gap: 8px; }
+  .wc-pill {
+    display: flex; align-items: center; gap: 8px; padding: 8px 14px;
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 2px;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-mid);
   }
  
-  /* ── STAT STRIP ── */
-  .stat-strip {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    margin-bottom: 24px;
-  }
- 
+  .stat-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
   .stat-box {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 22px 24px;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.2s, box-shadow 0.2s;
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 4px; padding: 22px 24px;
+    position: relative; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s;
   }
- 
-  .stat-box:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--glow-md);
-  }
- 
-  .stat-box::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--purple-core), var(--violet));
-  }
- 
+  .stat-box:hover { transform: translateY(-3px); box-shadow: var(--glow-md); }
+  .stat-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--purple-core), var(--violet)); }
   .stat-box.green::before { background: linear-gradient(90deg, var(--green-ok), #06b6d4); }
   .stat-box.amber::before { background: linear-gradient(90deg, var(--amber), #f97316); }
   .stat-box.red::before   { background: linear-gradient(90deg, var(--red), #f97316); }
@@ -181,362 +118,90 @@
   .stat-value.green { color: var(--green-ok); }
   .stat-value.purple { color: var(--purple-glow); }
   .stat-sub { font-size: 11px; color: var(--text-dim); margin-top: 6px; font-family: 'JetBrains Mono', monospace; }
+  .stat-icon { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 28px; opacity: 0.12; }
  
-  .stat-icon {
-    position: absolute;
-    right: 20px; top: 50%; transform: translateY(-50%);
-    font-size: 28px; opacity: 0.12;
-  }
+  .main-grid { display: grid; grid-template-columns: 1fr 1fr 1.2fr; gap: 20px; margin-bottom: 24px; }
+  .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 4px; padding: 24px; position: relative; overflow: hidden; }
+  .card-glow { position: absolute; top: -40px; right: -40px; width: 120px; height: 120px; background: radial-gradient(circle, rgba(123,47,255,0.15) 0%, transparent 70%); pointer-events: none; }
+  .card-title { font-size: 13px; font-weight: 700; color: var(--text-mid); text-transform: uppercase; letter-spacing: 0.18em; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+  .card-title-icon { width: 28px; height: 28px; border-radius: 2px; background: var(--purple-soft); border: 1px solid var(--border); display: grid; place-items: center; font-size: 13px; }
  
-  /* ── MAIN GRID ── */
-  .main-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1.2fr;
-    gap: 20px;
-    margin-bottom: 24px;
-  }
- 
-  /* ── CARDS ── */
-  .card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 24px;
-    position: relative;
-    overflow: hidden;
-  }
- 
-  .card-glow {
-    position: absolute;
-    top: -40px; right: -40px;
-    width: 120px; height: 120px;
-    background: radial-gradient(circle, rgba(123,47,255,0.15) 0%, transparent 70%);
-    pointer-events: none;
-  }
- 
-  .card-title {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--text-mid);
-    text-transform: uppercase;
-    letter-spacing: 0.18em;
-    margin-bottom: 20px;
-    display: flex; align-items: center; gap: 8px;
-  }
- 
-  .card-title-icon {
-    width: 28px; height: 28px;
-    border-radius: 2px;
-    background: var(--purple-soft);
-    border: 1px solid var(--border);
-    display: grid; place-items: center;
-    font-size: 13px;
-  }
- 
-  /* ── METRIC ROWS ── */
-  .metric-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 11px 0;
-    border-bottom: 1px solid var(--border-faint);
-  }
+  .metric-row { display: flex; justify-content: space-between; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--border-faint); }
   .metric-row:last-child { border-bottom: none; }
   .metric-key { font-size: 13px; color: var(--text-mid); }
-  .metric-val {
-    font-size: 14px; font-weight: 700;
-    color: var(--text-bright);
-    font-family: 'JetBrains Mono', monospace;
-  }
+  .metric-val { font-size: 14px; font-weight: 700; color: var(--text-bright); font-family: 'JetBrains Mono', monospace; }
   .metric-val.green { color: var(--green-ok); }
   .metric-val.amber { color: var(--amber); }
   .metric-val.purple { color: var(--purple-glow); }
  
-  /* ── ACTIVITY FEED ── */
-  .feed-item {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 14px 0;
-    border-bottom: 1px solid var(--border-faint);
-  }
+  .feed-item { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--border-faint); }
   .feed-item:last-child { border-bottom: none; }
- 
-  .feed-icon {
-    width: 36px; height: 36px; flex-shrink: 0;
-    border-radius: 4px;
-    background: var(--purple-soft);
-    border: 1px solid var(--border);
-    display: grid; place-items: center;
-    font-size: 15px;
-  }
- 
+  .feed-icon { width: 36px; height: 36px; flex-shrink: 0; border-radius: 4px; background: var(--purple-soft); border: 1px solid var(--border); display: grid; place-items: center; font-size: 15px; }
   .feed-icon.won  { background: var(--green-glow); border-color: rgba(34,211,165,0.3); }
   .feed-icon.lost { background: rgba(244,63,94,0.12); border-color: rgba(244,63,94,0.3); }
- 
   .feed-body { flex: 1; min-width: 0; }
   .feed-title { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .feed-meta  { font-size: 11px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; margin-top: 3px; }
- 
-  .feed-badge {
-    padding: 4px 10px;
-    border-radius: 2px;
-    font-size: 11px; font-weight: 700;
-    letter-spacing: 0.5px;
-    flex-shrink: 0;
-  }
+  .feed-badge { padding: 4px 10px; border-radius: 2px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; flex-shrink: 0; }
   .badge-won  { background: var(--green-glow); color: var(--green-ok); border: 1px solid rgba(34,211,165,0.3); }
   .badge-lost { background: rgba(244,63,94,0.12); color: #f43f5e; border: 1px solid rgba(244,63,94,0.3); }
   .badge-pend { background: rgba(245,158,11,0.12); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
  
-  /* ── CAMPAIGN FORM ── */
-  .campaign-panel {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 28px;
-    margin-bottom: 24px;
-  }
- 
-  .panel-header {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 28px;
-    padding-bottom: 18px;
-    border-bottom: 1px solid var(--border);
-  }
- 
+  .campaign-panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 4px; padding: 28px; margin-bottom: 24px; }
+  .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
   .panel-title { font-size: 18px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.15em;}
   .panel-subtitle { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
  
-  .form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 18px;
-  }
- 
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
   .form-grid.three { grid-template-columns: 1fr 1fr 1fr; }
   .form-grid.full  { grid-template-columns: 1fr; }
- 
   .field { display: flex; flex-direction: column; gap: 8px; }
- 
-  .field label {
-    font-size: 11px; font-weight: 700;
-    color: var(--text-dim);
-    text-transform: uppercase; letter-spacing: 0.8px;
-  }
- 
-  .field input,
-  .field select,
-  .field textarea {
-    background: var(--bg-deep);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 11px 14px;
-    color: var(--text-bright);
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 13px;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    appearance: none;
-    outline: none;
-  }
- 
-  .field input:focus,
-  .field select:focus,
-  .field textarea:focus {
-    border-color: var(--purple-core);
-    box-shadow: 0 0 0 3px rgba(123,47,255,0.15);
-  }
- 
+  .field label { font-size: 11px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.8px; }
+  .field input, .field select, .field textarea { background: var(--bg-deep); border: 1px solid var(--border); border-radius: 4px; padding: 11px 14px; color: var(--text-bright); font-family: 'Space Grotesk', sans-serif; font-size: 13px; transition: border-color 0.2s, box-shadow 0.2s; appearance: none; outline: none; }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--purple-core); box-shadow: 0 0 0 3px rgba(123,47,255,0.15); }
   .field select { cursor: pointer; }
   .field option { background: var(--bg-deep); }
  
-  /* ── STRATEGY PILLS ── */
-  .strategy-row {
-    display: flex; gap: 12px;
-    margin-bottom: 20px;
-  }
- 
-  .strategy-pill {
-    flex: 1;
-    padding: 14px 16px;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: center;
-  }
- 
+  .strategy-row { display: flex; gap: 12px; margin-bottom: 20px; }
+  .strategy-pill { flex: 1; padding: 14px 16px; border: 1px solid var(--border); border-radius: 4px; cursor: pointer; transition: all 0.2s; text-align: center; }
   .strategy-pill:hover { border-color: var(--purple-glow); }
- 
-  .strategy-pill.active {
-    border-color: var(--purple-core);
-    background: var(--purple-soft);
-    box-shadow: var(--glow-sm);
-  }
- 
+  .strategy-pill.active { border-color: var(--purple-core); background: var(--purple-soft); box-shadow: var(--glow-sm); }
   .strategy-pill-name { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
   .strategy-pill-desc { font-size: 11px; color: var(--text-dim); }
  
-  /* ── TOGGLES ── */
   .toggle-list { display: flex; flex-direction: column; gap: 6px; }
- 
-  .toggle-row {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 12px 16px;
-    background: var(--bg-deep);
-    border: 1px solid var(--border-faint);
-    border-radius: 4px;
-  }
- 
+  .toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: var(--bg-deep); border: 1px solid var(--border-faint); border-radius: 4px; }
   .toggle-label { font-size: 13px; color: var(--text-mid); }
- 
-  .toggle {
-    width: 42px; height: 24px;
-    background: var(--bg-surface);
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    position: relative;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
- 
+  .toggle { width: 42px; height: 24px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 999px; position: relative; cursor: pointer; transition: background 0.3s; }
   .toggle.on { background: var(--purple-core); border-color: var(--purple-core); box-shadow: var(--glow-sm); }
- 
-  .toggle::after {
-    content: '';
-    position: absolute;
-    width: 18px; height: 18px;
-    background: white;
-    border-radius: 50%;
-    top: 2px; left: 2px;
-    transition: left 0.3s;
-  }
- 
+  .toggle::after { content: ''; position: absolute; width: 18px; height: 18px; background: white; border-radius: 50%; top: 2px; left: 2px; transition: left 0.3s; }
   .toggle.on::after { left: 20px; }
  
-  /* ── BUTTONS ── */
   .btn-row { display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); }
- 
-  .btn {
-    padding: 12px 24px;
-    border-radius: 4px;
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 13px; font-weight: 700;
-    cursor: pointer;
-    border: none;
-    transition: all 0.2s;
-    letter-spacing: 0.12em; text-transform: uppercase;
-  }
- 
-  .btn-ghost {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--text-mid);
-  }
+  .btn { padding: 12px 24px; border-radius: 4px; font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; border: none; transition: all 0.2s; letter-spacing: 0.12em; text-transform: uppercase; }
+  .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text-mid); }
   .btn-ghost:hover { border-color: var(--purple-glow); color: var(--text-bright); }
- 
-  .btn-primary {
-    background: linear-gradient(135deg, var(--purple-core), #5b0fd4);
-    color: white;
-    box-shadow: var(--glow-sm);
-  }
+  .btn-primary { background: linear-gradient(135deg, var(--purple-core), #5b0fd4); color: white; box-shadow: var(--glow-sm); }
   .btn-primary:hover { transform: translateY(-2px); box-shadow: var(--glow-md); }
- 
-  .btn-launch {
-    background: linear-gradient(135deg, var(--green-ok), #0891b2);
-    color: var(--bg-deep);
-    font-weight: 800;
-    box-shadow: 0 0 16px rgba(34,211,165,0.35);
-  }
+  .btn-launch { background: linear-gradient(135deg, var(--green-ok), #0891b2); color: var(--bg-deep); font-weight: 800; box-shadow: 0 0 16px rgba(34,211,165,0.35); }
   .btn-launch:hover { transform: translateY(-2px); box-shadow: 0 0 28px rgba(34,211,165,0.5); }
  
-  /* ── ON-CHAIN VERIFIED BADGE (matching screenshot's green badge) ── */
-  .verified-badge {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 6px 14px;
-    background: var(--green-glow);
-    border: 1px solid rgba(34,211,165,0.4);
-    border-radius: 2px;
-    font-size: 11px; font-weight: 700;
-    color: var(--green-ok);
-    letter-spacing: 0.3px;
-  }
+  .verified-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; background: var(--green-glow); border: 1px solid rgba(34,211,165,0.4); border-radius: 2px; font-size: 11px; font-weight: 700; color: var(--green-ok); letter-spacing: 0.3px; }
+  .verified-badge::before { content: '✓'; width: 16px; height: 16px; background: var(--green-ok); border-radius: 50%; display: grid; place-items: center; font-size: 9px; color: var(--bg-deep); font-weight: 900; }
  
-  .verified-badge::before {
-    content: '✓';
-    width: 16px; height: 16px;
-    background: var(--green-ok);
-    border-radius: 50%;
-    display: grid; place-items: center;
-    font-size: 9px;
-    color: var(--bg-deep);
-    font-weight: 900;
-  }
+  .section-label { font-size: 11px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.18em; margin: 24px 0 14px; display: flex; align-items: center; gap: 10px; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border-faint); }
  
-  /* ── SECTION DIVIDER ── */
-  .section-label {
-    font-size: 11px; font-weight: 700;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    letter-spacing: 0.18em;
-    margin: 24px 0 14px;
-    display: flex; align-items: center; gap: 10px;
-  }
- 
-  .section-label::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border-faint);
-  }
- 
-  /* ── CHAIN INFO BAR ── */
-  .chain-bar {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 14px 22px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 24px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    color: var(--text-dim);
-  }
- 
+  .chain-bar { background: var(--bg-card); border: 1px solid var(--border); border-radius: 4px; padding: 14px 22px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); }
   .chain-bar-item { display: flex; align-items: center; gap: 8px; }
   .chain-bar-label { color: var(--text-dim); }
   .chain-bar-value { color: var(--text-bright); font-weight: 600; }
+  .chain-live { display: flex; align-items: center; gap: 6px; color: var(--green-ok); font-weight: 700; }
  
-  .chain-live {
-    display: flex; align-items: center; gap: 6px;
-    color: var(--green-ok);
-    font-weight: 700;
-  }
- 
-  /* ── responsive ── */
-  @media (max-width: 1100px) {
-    .main-grid { grid-template-columns: 1fr 1fr; }
-    .stat-strip { grid-template-columns: 1fr 1fr; }
-  }
-  @media (max-width: 640px) {
-    .main-grid { grid-template-columns: 1fr; }
-    .stat-strip { grid-template-columns: 1fr 1fr; }
-    .form-grid, .form-grid.three { grid-template-columns: 1fr; }
-    .strategy-row { flex-direction: column; }
-    .topbar { flex-direction: column; gap: 14px; }
-    .topbar-right { flex-wrap: wrap; justify-content: center; }
-  }
+  @media (max-width: 1100px) { .main-grid { grid-template-columns: 1fr 1fr; } .stat-strip { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 640px) { .main-grid { grid-template-columns: 1fr; } .stat-strip { grid-template-columns: 1fr 1fr; } .form-grid, .form-grid.three { grid-template-columns: 1fr; } .strategy-row { flex-direction: column; } .topbar { flex-direction: column; gap: 14px; } .topbar-right { flex-wrap: wrap; justify-content: center; } }
 
-
-  /* ── TOAST NOTIFICATION ── */
-  #toast {
-    display:none; position:fixed; bottom:24px; right:24px; z-index:9999;
-    background:#111127; border:1px solid rgba(34,211,165,0.5);
-    border-radius:4px; padding:16px 20px; max-width:380px;
-    box-shadow:0 0 24px rgba(34,211,165,0.2); font-family:'JetBrains Mono',monospace;
-  }
+  #toast { display:none; position:fixed; bottom:24px; right:24px; z-index:9999; background:#111127; border:1px solid rgba(34,211,165,0.5); border-radius:4px; padding:16px 20px; max-width:380px; box-shadow:0 0 24px rgba(34,211,165,0.2); font-family:'JetBrains Mono',monospace; }
   #toast.show { display:block; animation:fadeIn .3s ease; }
   @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
   #toast-title { font-size:13px; font-weight:700; color:#22d3a5; margin-bottom:6px; font-family:'Space Grotesk',sans-serif; }
@@ -544,13 +209,11 @@
   #toast-link  { display:inline-block; margin-top:8px; font-size:11px; font-weight:700; color:#9b59ff; text-decoration:none; }
   #toast-link:hover { color:#f0edff; }
   #toast-close { position:absolute; top:10px; right:14px; background:none; border:none; color:#5a5780; cursor:pointer; font-size:16px; }
-
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <!-- TOPBAR -->
   <div class="topbar">
     <div class="logo">
       <div class="logo-mark">V</div>
@@ -561,296 +224,107 @@
         <div class="wallet-dot"></div>
         0G Mainnet
       </div>
-      <div class="wallet-pill">
-        <div class="wallet-dot"></div>
-        Not connected
-      </div>
       <div class="verified-badge">Verified on OG Chain</div>
-      <button id="connect-wallet-btn" class="agent-pill" style="cursor:pointer;border:none;">⚡ Connect Wallet</button>
-      <button id="disconnect-wallet-btn" class="agent-pill" onclick="disconnectWallet()" style="cursor:pointer;border:none;background:linear-gradient(135deg,#3d0a0a,#6b1010);color:#ff6b6b;display:none;">✕ Disconnect</button>
+      <div id="wc-wrapper" class="wc-wrapper">
+        <button id="wc-connect-btn" class="wc-btn" onclick="connectWalletAndStartAdvAgent()">⚡ Connect Wallet</button>
+        <div id="wc-connected-ui" class="wc-connected-ui" style="display:none;">
+          <div class="wc-pill" id="wc-address-pill">...</div>
+          <button id="wc-disconnect-btn" class="wc-btn wc-btn-danger" onclick="wcDisconnect()">✕</button>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- CHAIN INFO BAR — named IDs so JS updates correctly -->
   <div class="chain-bar">
-    <div class="chain-bar-item">
-      <span class="chain-bar-label">Agent ID:</span>
-      <span class="chain-bar-value" id="cb-agentid">—</span>
-    </div>
-    <div class="chain-bar-item">
-      <span class="chain-bar-label">Reputation:</span>
-      <span class="chain-bar-value" style="color:var(--green-ok)" id="cb-reputation">—</span>
-    </div>
-    <div class="chain-bar-item">
-      <span class="chain-bar-label">Contract Balance:</span>
-      <span class="chain-bar-value" style="color:var(--amber)" id="cb-escrow">—</span>
-    </div>
-    <div class="chain-bar-item">
-      <span class="chain-bar-label">Wallet Balance:</span>
-      <span class="chain-bar-value" id="cb-balance">—</span>
-    </div>
-    <div class="chain-bar-item">
-      <span class="chain-bar-label">Network:</span>
-      <span class="chain-bar-value" style="color:var(--purple-glow)">0G Mainnet · Chain 16661</span>
-    </div>
+    <div class="chain-bar-item"><span class="chain-bar-label">Agent ID:</span><span class="chain-bar-value" id="cb-agentid">—</span></div>
+    <div class="chain-bar-item"><span class="chain-bar-label">Reputation:</span><span class="chain-bar-value" style="color:var(--green-ok)" id="cb-reputation">—</span></div>
+    <div class="chain-bar-item"><span class="chain-bar-label">Contract Balance:</span><span class="chain-bar-value" style="color:var(--amber)" id="cb-escrow">—</span></div>
+    <div class="chain-bar-item"><span class="chain-bar-label">Wallet Balance:</span><span class="chain-bar-value" id="cb-balance">—</span></div>
+    <div class="chain-bar-item"><span class="chain-bar-label">Network:</span><span class="chain-bar-value" style="color:var(--purple-glow)">0G Mainnet · Chain 16661</span></div>
   </div>
 
-<!-- STAT STRIP -->
   <div class="stat-strip">
-    <div class="stat-box">
-      <div class="stat-label">Total Bids Placed</div>
-      <div class="stat-value purple">487</div>
-      <div class="stat-sub">↑ +23 today</div>
-      <div class="stat-icon"></div>
-    </div>
-    <div class="stat-box green">
-      <div class="stat-label">Auctions Won</div>
-      <div class="stat-value green">156</div>
-      <div class="stat-sub">32% win rate</div>
-      <div class="stat-icon"></div>
-    </div>
-    <div class="stat-box amber">
-      <div class="stat-label">Total Spend (OG)</div>
-      <div class="stat-value" style="font-size:26px">79.4 OG</div>
-      <div class="stat-sub">≈ $12,450 USD</div>
-      <div class="stat-icon"></div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-label">Avg Win Cost</div>
-      <div class="stat-value" style="font-size:26px">0.051</div>
-      <div class="stat-sub">OG per auction won</div>
-      <div class="stat-icon"></div>
-    </div>
+    <div class="stat-box"><div class="stat-label">Total Bids Placed</div><div class="stat-value purple">487</div><div class="stat-sub">↑ +23 today</div><div class="stat-icon"></div></div>
+    <div class="stat-box green"><div class="stat-label">Auctions Won</div><div class="stat-value green">156</div><div class="stat-sub">32% win rate</div><div class="stat-icon"></div></div>
+    <div class="stat-box amber"><div class="stat-label">Total Spend (OG)</div><div class="stat-value" style="font-size:26px">79.4 OG</div><div class="stat-sub">≈ $12,450 USD</div><div class="stat-icon"></div></div>
+    <div class="stat-box"><div class="stat-label">Avg Win Cost</div><div class="stat-value" style="font-size:26px">0.051</div><div class="stat-sub">OG per auction won</div><div class="stat-icon"></div></div>
   </div>
  
-  <!-- MAIN 3-COL GRID -->
   <div class="main-grid">
- 
-    <!-- Agent Performance -->
     <div class="card">
       <div class="card-glow"></div>
-      <div class="card-title">
-        <div class="card-title-icon"></div>
-        Agent Performance
-      </div>
-      <div class="metric-row">
-        <span class="metric-key">Avg Cost Per Bid</span>
-        <span class="metric-val">0.081 OG</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-key">Avg Win Price</span>
-        <span class="metric-val">0.156 OG</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-key">Budget Utilisation</span>
-        <span class="metric-val amber">78%</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-key">Daily Spend Limit</span>
-        <span class="metric-val">5 OG</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-key">On-Chain Reputation</span>
-        <span class="metric-val green">92 / 100</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-key">Verified Agent</span>
-        <span class="metric-val green">✓ Yes</span>
-      </div>
+      <div class="card-title"><div class="card-title-icon"></div>Agent Performance</div>
+      <div class="metric-row"><span class="metric-key">Avg Cost Per Bid</span><span class="metric-val">0.081 OG</span></div>
+      <div class="metric-row"><span class="metric-key">Avg Win Price</span><span class="metric-val">0.156 OG</span></div>
+      <div class="metric-row"><span class="metric-key">Budget Utilisation</span><span class="metric-val amber">78%</span></div>
+      <div class="metric-row"><span class="metric-key">Daily Spend Limit</span><span class="metric-val">5 OG</span></div>
+      <div class="metric-row"><span class="metric-key">On-Chain Reputation</span><span class="metric-val green">92 / 100</span></div>
+      <div class="metric-row"><span class="metric-key">Verified Agent</span><span class="metric-val green">✓ Yes</span></div>
     </div>
  
-    <!-- Wallet & Escrow -->
     <div class="card">
       <div class="card-glow"></div>
-      <div class="card-title">
-        <div class="card-title-icon"></div>
-        Wallet & Escrow
-      </div>
-      <div class="metric-row">
-        <span class="metric-key">Campaign Budget</span>
-        <span class="metric-val">320 OG</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-key">Remaining Budget</span>
-        <span class="metric-val green">73.9 OG</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-key">Available to Bid</span>
-        <span class="metric-val green">13.1 OG</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-key">Locked in Escrow</span>
-        <span class="metric-val amber">2.3 OG</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-key">Settled (Released)</span>
-        <span class="metric-val">156 txns</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-key">Pending Escrow</span>
-        <span class="metric-val amber">3 auctions</span>
-      </div>
+      <div class="card-title"><div class="card-title-icon"></div>Wallet & Escrow</div>
+      <div class="metric-row"><span class="metric-key">Campaign Budget</span><span class="metric-val">320 OG</span></div>
+      <div class="metric-row"><span class="metric-key">Remaining Budget</span><span class="metric-val green">73.9 OG</span></div>
+      <div class="metric-row"><span class="metric-key">Available to Bid</span><span class="metric-val green">13.1 OG</span></div>
+      <div class="metric-row"><span class="metric-key">Locked in Escrow</span><span class="metric-val amber">2.3 OG</span></div>
+      <div class="metric-row"><span class="metric-key">Settled (Released)</span><span class="metric-val">156 txns</span></div>
+      <div class="metric-row"><span class="metric-key">Pending Escrow</span><span class="metric-val amber">3 auctions</span></div>
     </div>
  
-    <!-- Recent Bids Feed -->
     <div class="card">
       <div class="card-glow"></div>
-      <div class="card-title">
-        <div class="card-title-icon"></div>
-        Live Bid Feed
-      </div>
- 
-      <div class="feed-item">
-        <div class="feed-icon won"></div>
-        <div class="feed-body">
-          <div class="feed-title">Homepage Hero — TechCrunch</div>
-          <div class="feed-meta">0.042 OG · #1 of 28 · 2h ago</div>
-        </div>
-        <div class="feed-badge badge-won">WON</div>
-      </div>
- 
-      <div class="feed-item">
-        <div class="feed-icon lost">✗</div>
-        <div class="feed-body">
-          <div class="feed-title">Sidebar Ad — HackerNews</div>
-          <div class="feed-meta">0.015 OG · #4 of 12 · 4h ago</div>
-        </div>
-        <div class="feed-badge badge-lost">LOST</div>
-      </div>
- 
-      <div class="feed-item">
-        <div class="feed-icon won"></div>
-        <div class="feed-body">
-          <div class="feed-title">Above Fold — CoinDesk</div>
-          <div class="feed-meta">0.067 OG · #1 of 45 · 6h ago</div>
-        </div>
-        <div class="feed-badge badge-won">WON</div>
-      </div>
- 
-      <div class="feed-item">
-        <div class="feed-icon"></div>
-        <div class="feed-body">
-          <div class="feed-title">Featured Post — BlockchainBlog</div>
-          <div class="feed-meta">0.028 OG · #2 of 8 · 8h ago</div>
-        </div>
-        <div class="feed-badge badge-pend">PENDING</div>
-      </div>
- 
-      <div class="feed-item">
-        <div class="feed-icon won"></div>
-        <div class="feed-body">
-          <div class="feed-title">Newsletter — Web3Weekly</div>
-          <div class="feed-meta">0.051 OG · #1 of 34 · 12h ago</div>
-        </div>
-        <div class="feed-badge badge-won">WON</div>
-      </div>
+      <div class="card-title"><div class="card-title-icon"></div>Live Bid Feed</div>
+      <div class="feed-item"><div class="feed-icon won"></div><div class="feed-body"><div class="feed-title">Homepage Hero — TechCrunch</div><div class="feed-meta">0.042 OG · #1 of 28 · 2h ago</div></div><div class="feed-badge badge-won">WON</div></div>
+      <div class="feed-item"><div class="feed-icon lost">✗</div><div class="feed-body"><div class="feed-title">Sidebar Ad — HackerNews</div><div class="feed-meta">0.015 OG · #4 of 12 · 4h ago</div></div><div class="feed-badge badge-lost">LOST</div></div>
+      <div class="feed-item"><div class="feed-icon won"></div><div class="feed-body"><div class="feed-title">Above Fold — CoinDesk</div><div class="feed-meta">0.067 OG · #1 of 45 · 6h ago</div></div><div class="feed-badge badge-won">WON</div></div>
+      <div class="feed-item"><div class="feed-icon"></div><div class="feed-body"><div class="feed-title">Featured Post — BlockchainBlog</div><div class="feed-meta">0.028 OG · #2 of 8 · 8h ago</div></div><div class="feed-badge badge-pend">PENDING</div></div>
+      <div class="feed-item"><div class="feed-icon won"></div><div class="feed-body"><div class="feed-title">Newsletter — Web3Weekly</div><div class="feed-meta">0.051 OG · #1 of 34 · 12h ago</div></div><div class="feed-badge badge-won">WON</div></div>
     </div>
   </div>
  
-  <!-- LAUNCH CAMPAIGN FORM -->
   <div class="campaign-panel">
     <div class="panel-header">
-      <div>
-        <div class="panel-title"> Deploy Autonomous Bidding Agent</div>
-        <div class="panel-subtitle">Configure your agent — it will bid 24/7 on 0G Chain, autonomously</div>
-      </div>
+      <div><div class="panel-title">Deploy Autonomous Bidding Agent</div><div class="panel-subtitle">Configure your agent — it will bid 24/7 on 0G Chain, autonomously</div></div>
       <div class="verified-badge">Agent writes to 0G Storage</div>
     </div>
- 
     <div class="section-label">Campaign Details</div>
     <div class="form-grid" style="margin-bottom:18px">
-      <div class="field">
-        <label>Campaign Name *</label>
-        <input type="text" value="Q2 Brand Awareness — Tech">
-      </div>
-      <div class="field">
-        <label>Duration *</label>
-        <select>
-          <option>7 days</option>
-          <option selected>30 days</option>
-          <option>60 days</option>
-          <option>90 days</option>
-        </select>
-      </div>
+      <div class="field"><label>Campaign Name *</label><input type="text" value="Q2 Brand Awareness — Tech"></div>
+      <div class="field"><label>Duration *</label><select><option>7 days</option><option selected>30 days</option><option>60 days</option><option>90 days</option></select></div>
     </div>
- 
     <div class="section-label">Bidding Strategy</div>
     <div class="strategy-row">
-      <div class="strategy-pill active" onclick="document.querySelectorAll('.strategy-pill').forEach(p=>p.classList.remove('active'));this.classList.add('active')">
-        <div class="strategy-pill-name" style="color:var(--red)"> Aggressive</div>
-        <div class="strategy-pill-desc">Win at all costs within budget</div>
-      </div>
-      <div class="strategy-pill" onclick="document.querySelectorAll('.strategy-pill').forEach(p=>p.classList.remove('active'));this.classList.add('active')">
-        <div class="strategy-pill-name" style="color:var(--purple-glow)">Balanced</div>
-        <div class="strategy-pill-desc">Optimise cost-per-win (recommended)</div>
-      </div>
-      <div class="strategy-pill" onclick="document.querySelectorAll('.strategy-pill').forEach(p=>p.classList.remove('active'));this.classList.add('active')">
-        <div class="strategy-pill-name" style="color:var(--green-ok)"> Conservative</div>
-        <div class="strategy-pill-desc">High-value slots only, low volume</div>
-      </div>
+      <div class="strategy-pill active" onclick="document.querySelectorAll('.strategy-pill').forEach(p=>p.classList.remove('active'));this.classList.add('active')"><div class="strategy-pill-name" style="color:var(--red)">Aggressive</div><div class="strategy-pill-desc">Win at all costs within budget</div></div>
+      <div class="strategy-pill" onclick="document.querySelectorAll('.strategy-pill').forEach(p=>p.classList.remove('active'));this.classList.add('active')"><div class="strategy-pill-name" style="color:var(--purple-glow)">Balanced</div><div class="strategy-pill-desc">Optimise cost-per-win (recommended)</div></div>
+      <div class="strategy-pill" onclick="document.querySelectorAll('.strategy-pill').forEach(p=>p.classList.remove('active'));this.classList.add('active')"><div class="strategy-pill-name" style="color:var(--green-ok)">Conservative</div><div class="strategy-pill-desc">High-value slots only, low volume</div></div>
     </div>
- 
     <div class="section-label">Bid Limits</div>
     <div class="form-grid three" style="margin-bottom:18px">
-      <div class="field">
-        <label>Min Bid (OG) *</label>
-        <input type="number" value="0.001" step="0.001">
-      </div>
-      <div class="field">
-        <label>Max Bid (OG) *</label>
-        <input type="number" value="0.100" step="0.001">
-      </div>
-      <div class="field">
-        <label>Max Daily Spend (OG) *</label>
-        <input type="number" value="5" step="0.1">
-      </div>
+      <div class="field"><label>Min Bid (OG) *</label><input type="number" value="0.001" step="0.001"></div>
+      <div class="field"><label>Max Bid (OG) *</label><input type="number" value="0.100" step="0.001"></div>
+      <div class="field"><label>Max Daily Spend (OG) *</label><input type="number" value="5" step="0.1"></div>
     </div>
- 
     <div class="section-label">Targeting</div>
     <div class="form-grid" style="margin-bottom:18px">
-      <div class="field">
-        <label>Min Publisher Reputation</label>
-        <input type="number" value="75" min="0" max="100">
-      </div>
-      <div class="field">
-        <label>Preferred Placement</label>
-        <select>
-          <option>Any Placement</option>
-          <option selected>Above the Fold</option>
-          <option>Homepage Only</option>
-          <option>High-Traffic Only</option>
-        </select>
-      </div>
+      <div class="field"><label>Min Publisher Reputation</label><input type="number" value="75" min="0" max="100"></div>
+      <div class="field"><label>Preferred Placement</label><select><option>Any Placement</option><option selected>Above the Fold</option><option>Homepage Only</option><option>High-Traffic Only</option></select></div>
     </div>
- 
     <div class="section-label">Agent Autonomy Settings</div>
     <div class="toggle-list">
-      <div class="toggle-row">
-        <span class="toggle-label">24/7 Autonomous Bidding (no human approval needed)</span>
-        <div class="toggle on" onclick="this.classList.toggle('on')"></div>
-      </div>
-      <div class="toggle-row">
-        <span class="toggle-label">Compete only against verified agents (on-chain)</span>
-        <div class="toggle" onclick="this.classList.toggle('on')"></div>
-      </div>
-      <div class="toggle-row">
-        <span class="toggle-label">Prioritise high-reputation publishers (≥ 80/100)</span>
-        <div class="toggle on" onclick="this.classList.toggle('on')"></div>
-      </div>
-      <div class="toggle-row">
-        <span class="toggle-label">Auto-release escrow on verified ad delivery</span>
-        <div class="toggle on" onclick="this.classList.toggle('on')"></div>
-      </div>
+      <div class="toggle-row"><span class="toggle-label">24/7 Autonomous Bidding (no human approval needed)</span><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="toggle-row"><span class="toggle-label">Compete only against verified agents (on-chain)</span><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+      <div class="toggle-row"><span class="toggle-label">Prioritise high-reputation publishers (≥ 80/100)</span><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+      <div class="toggle-row"><span class="toggle-label">Auto-release escrow on verified ad delivery</span><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
     </div>
- 
     <div class="btn-row">
       <button class="btn btn-ghost">Save Draft</button>
       <button class="btn btn-primary">Preview Campaign</button>
       <button class="btn btn-primary" onclick="handleRegister()">Register on 0G</button>
-      <button class="btn btn-launch" onclick="handleDeploy()"> Deploy Agent to 0G Chain</button>
+      <button class="btn btn-launch" onclick="handleDeploy()">Deploy Agent to 0G Chain</button>
     </div>
   </div>
-
 
 <div id="toast">
   <button id="toast-close" onclick="document.getElementById('toast').classList.remove('show')">✕</button>
@@ -859,23 +333,15 @@
   <a id="toast-link" href="#" target="_blank">View on 0G Explorer →</a>
 </div>
 
-
 <script>
-// ── ETHERS GUARD ───────────────────────────────────────────────
 if (typeof ethers === "undefined") {
-  console.error("ethers.js failed to load from CDN. Check your network/ad-blocker.");
-  document.addEventListener("DOMContentLoaded", () => {
-    const btn = document.getElementById("connect-wallet-btn");
-    if (btn) { btn.textContent = "⚠ Load Error"; btn.disabled = true; btn.title = "ethers.js CDN failed to load — check console."; }
-  });
+  console.error("ethers.js failed to load from CDN.");
 } else {
 
-// ── CONTRACT ADDRESSES ─────────────────────────────────────────
 const REGISTRY_ADDRESS   = "0x4B785db8De522cc3d7Fb4F191B9368Cc1197B742";
 const AUCTION_ADDRESS    = "0x108274F7151BA879A03D5b1Fe525745Cf71695fF";
 const SETTLEMENT_ADDRESS = "0x555b3d16810Bfbd0Da5dFBFF4E07B576f4EDd3d1";
 
-// ── ABIs (corrected: single array, not nested) ─────────────────
 const REGISTRY_ABI = [
   {"inputs":[],"stateMutability":"nonpayable","type":"constructor"},
   {"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"OwnableInvalidOwner","type":"error"},
@@ -934,62 +400,47 @@ const SETTLEMENT_ABI = [
   {"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}
 ];
 
-// ── STATE ──────────────────────────────────────────────────────
 let provider, signer, registry, auction, settlement;
 const CHAIN_ID = 16661n;
 const EXPLORER = "https://chainscan.0g.ai";
 
-// ── TOAST ──────────────────────────────────────────────────────
 function showToast(label, txHash) {
   const url = EXPLORER + "/tx/" + txHash;
   document.getElementById("toast-title").textContent = label + " — TX Confirmed";
   document.getElementById("toast-hash").textContent  = txHash.slice(0,20) + "..." + txHash.slice(-8);
   document.getElementById("toast-link").href = url;
   document.getElementById("toast").classList.add("show");
-  console.log(label, "TX:", txHash, "→", url);
   setTimeout(() => document.getElementById("toast").classList.remove("show"), 15000);
 }
 
-// ── CONNECT ────────────────────────────────────────────────────
-async function connectWallet() {
+// ── NEW WALLETCONNECT MODULE ─────────────────────────────────────
+let wcAddress = null;
+
+async function wcConnect() {
   if (!window.ethereum) {
     if (location.protocol === "file:") {
-      alert("⚠️ File:// protocol detected!\n\nMetaMask does NOT inject into pages opened from the filesystem.\n\nFix:\n  python3 -m http.server 8080\nthen open http://localhost:8080");
+      alert("⚠️ File:// protocol detected!\nFix:\n  python3 -m http.server 8080");
     } else {
-      alert("MetaMask not found. Install from metamask.io then reload.");
+      alert("Wallet provider not found. Please install MetaMask.");
     }
-    return;
+    return false;
   }
   try {
     await window.ethereum.request({ method: "eth_requestAccounts" });
-
-    // ── Step 1: check chain BEFORE creating provider ──────────
     const rawChain = await window.ethereum.request({ method: "eth_chainId" });
     if (BigInt(rawChain) !== CHAIN_ID) {
       try {
         await window.ethereum.request({
           method: "wallet_addEthereumChain",
-          params: [{
-            chainId: "0x4115",
-            chainName: "0G Mainnet",
-            nativeCurrency: { name: "0G", symbol: "0G", decimals: 18 },
-            rpcUrls: ["https://evmrpc.0g.ai"],
-            blockExplorerUrls: ["https://chainscan.0g.ai"]
-          }]
+          params: [{ chainId: "0x4115", chainName: "0G Mainnet", nativeCurrency: { name: "0G", symbol: "0G", decimals: 18 }, rpcUrls: ["https://evmrpc.0g.ai"], blockExplorerUrls: ["https://chainscan.0g.ai"] }]
         });
-      } catch(switchErr) {
-        alert("Please switch MetaMask to 0G Mainnet (Chain ID 16661) and try again.");
-        return;
+      } catch(e) {
+        alert("Please switch MetaMask to 0G Mainnet."); return false;
       }
-      // Verify switch worked using raw RPC (not stale provider)
       const afterChain = await window.ethereum.request({ method: "eth_chainId" });
-      if (BigInt(afterChain) !== CHAIN_ID) {
-        alert("Still on wrong network. Switch MetaMask to 0G Mainnet (Chain 16661) manually then retry.");
-        return;
-      }
+      if (BigInt(afterChain) !== CHAIN_ID) return false;
     }
 
-    // ── Step 2: create provider/signer AFTER network confirmed ─
     provider = new ethers.BrowserProvider(window.ethereum);
     signer   = await provider.getSigner();
 
@@ -997,67 +448,51 @@ async function connectWallet() {
     auction    = new ethers.Contract(AUCTION_ADDRESS,    AUCTION_ABI,    signer);
     settlement = new ethers.Contract(SETTLEMENT_ADDRESS, SETTLEMENT_ABI, signer);
 
-    const addr  = await signer.getAddress();
-    const short = addr.slice(0,6) + "\u2026" + addr.slice(-4);
+    wcAddress = await signer.getAddress();
+    wcRender();
 
-    // Update wallet pill
-    const pill = document.querySelector(".wallet-pill");
-    if (pill) pill.innerHTML = '<div class="wallet-dot"></div>' + short;
-
-    // Update connect button
-    const btn = document.getElementById("connect-wallet-btn");
-    if (btn) { btn.textContent = "\u26A1 Connected"; btn.style.background = "linear-gradient(135deg,#0a6e6e,#0891b2)"; btn.style.display = "none"; }
-    const disconnectBtn = document.getElementById("disconnect-wallet-btn");
-    if (disconnectBtn) { disconnectBtn.style.display = ""; }
-
-    // ── Step 3: fetch balance on the now-correct network ───────
     try {
-      const balWei = await provider.getBalance(addr);
+      const balWei = await provider.getBalance(wcAddress);
       const balOG  = parseFloat(ethers.formatEther(balWei)).toFixed(3);
-      const el = (id) => document.getElementById(id);
-      if (el("cb-balance")) el("cb-balance").textContent = balOG + " OG";
-      console.log("\u2705 Wallet connected:", addr, "| Balance:", balOG, "OG");
-    } catch(balErr) {
-      console.warn("Balance fetch failed (RPC may be slow):", balErr.message);
-    }
+      if (document.getElementById("cb-balance")) document.getElementById("cb-balance").textContent = balOG + " OG";
+    } catch(e) {}
 
-    await loadAgentData(addr);
+    await loadAgentData(wcAddress);
+    return true;
   } catch(err) {
-    console.error("connectWallet:", err);
+    console.error("wcConnect:", err);
     alert("Connection failed: " + (err.reason || err.message));
+    return false;
   }
 }
 
-// ── DISCONNECT WALLET ───────────────────────────────────────────
-function disconnectWallet() {
-  // Clear all contract/provider state
-  provider   = null;
-  signer     = null;
-  registry   = null;
-  auction    = null;
-  settlement = null;
-
-  // Reset wallet pill
-  const pill = document.querySelector(".wallet-pill");
-  if (pill) pill.innerHTML = '<div class="wallet-dot"></div>Not connected';
-
-  // Reset chain bar values
+function wcDisconnect() {
+  provider = null; signer = null; registry = null; auction = null; settlement = null; wcAddress = null;
+  wcRender();
   const el = (id) => document.getElementById(id);
   if (el("cb-agentid"))    el("cb-agentid").textContent    = "—";
   if (el("cb-reputation")) el("cb-reputation").textContent = "—";
   if (el("cb-escrow"))     el("cb-escrow").textContent     = "—";
   if (el("cb-balance"))    el("cb-balance").textContent    = "—";
-
-  // Swap buttons — show Connect, hide Disconnect
-  const connectBtn    = document.getElementById("connect-wallet-btn");
-  const disconnectBtn = document.getElementById("disconnect-wallet-btn");
-  if (connectBtn)    { connectBtn.style.display    = ""; connectBtn.textContent = "⚡ Connect Wallet"; connectBtn.style.background = ""; }
-  if (disconnectBtn) { disconnectBtn.style.display = "none"; }
-
-  console.log("Wallet disconnected from Orvixa.");
 }
 
-// ── SET AGENT UI (direct update from known agentId) ────────────
+function wcRender() {
+  const btn = document.getElementById("wc-connect-btn");
+  const ui  = document.getElementById("wc-connected-ui");
+  const pill = document.getElementById("wc-address-pill");
+
+  if (wcAddress) {
+    if(btn) btn.style.display = "none";
+    if(ui) ui.style.display = "flex";
+    const short = wcAddress.slice(0,6) + "\u2026" + wcAddress.slice(-4);
+    if(pill) pill.innerHTML = '<div class="wallet-dot"></div>' + short;
+  } else {
+    if(btn) btn.style.display = "flex";
+    if(ui) ui.style.display = "none";
+  }
+}
+
+// ── APP LOGIC ────────────────────────────────────────────────────
 async function setAgentUI(agentId) {
   const el = (id) => document.getElementById(id);
   const short = agentId.slice(0,6) + "\u2026" + agentId.slice(-4);
@@ -1070,10 +505,8 @@ async function setAgentUI(agentId) {
     const bal = await settlement.getContractBalance();
     if (el("cb-escrow")) el("cb-escrow").textContent = parseFloat(ethers.formatEther(bal)).toFixed(4) + " OG locked";
   } catch(e) { if (el("cb-escrow")) el("cb-escrow").textContent = "0 OG locked"; }
-  console.log("\u2705 Agent UI updated:", agentId);
 }
 
-// ── LOAD AGENT DATA with retry (handles RPC indexing lag) ───────
 async function loadAgentData(addr, retries = 5, delayMs = 2000) {
   const el = (id) => document.getElementById(id);
   for (let i = 0; i < retries; i++) {
@@ -1081,21 +514,17 @@ async function loadAgentData(addr, retries = 5, delayMs = 2000) {
       const agentId = await registry.addressToAgentId(addr);
       if (!agentId || agentId === ethers.ZeroHash) {
         if (i < retries - 1) {
-          console.log("Agent not indexed yet, retry " + (i+1) + "/" + retries + " in " + (delayMs/1000) + "s...");
           await new Promise(r => setTimeout(r, delayMs));
           continue;
         }
-        // Final attempt — genuinely not registered
         if (el("cb-agentid"))    el("cb-agentid").textContent    = "Not registered";
         if (el("cb-reputation")) el("cb-reputation").textContent = "\u2014";
         if (el("cb-escrow"))     el("cb-escrow").textContent     = "\u2014";
         return false;
       }
-      // Found — update UI
       await setAgentUI(agentId);
       return true;
     } catch(err) {
-      console.warn("loadAgentData attempt " + (i+1) + " failed:", err.message);
       if (i < retries - 1) await new Promise(r => setTimeout(r, delayMs));
     }
   }
@@ -1103,85 +532,45 @@ async function loadAgentData(addr, retries = 5, delayMs = 2000) {
   return false;
 }
 
-// ── REGISTER AGENT ─────────────────────────────────────────────
 async function handleRegister() {
   if (!signer) { alert("Connect wallet first."); return; }
   const el = (id) => document.getElementById(id);
   try {
     const addr = await signer.getAddress();
-
-    // Check already registered
     const existing = await registry.addressToAgentId(addr);
     if (existing && existing !== ethers.ZeroHash) {
       await setAgentUI(existing);
       alert("Already registered!\nAgent ID: " + existing.slice(0,10) + "...");
       return;
     }
-
-    // Show pending state
-    if (el("cb-agentid"))    el("cb-agentid").textContent    = "Registering...";
-    if (el("cb-reputation")) el("cb-reputation").textContent = "pending...";
-
+    if (el("cb-agentid")) el("cb-agentid").textContent = "Registering...";
     const cid = "orvixa-advertiser-" + Date.now();
-
-    // ── STEP 1: staticCall to capture the return value BEFORE sending tx ──
-    // registerAgent() returns bytes32 agentId — staticCall reads it without paying gas
     let agentId = null;
-    try {
-      agentId = await registry.registerAgent.staticCall(cid);
-      console.log("staticCall agentId preview:", agentId);
-    } catch(e) {
-      console.warn("staticCall failed (may already be registered):", e.message);
-    }
-
-    // ── STEP 2: Send the real transaction ──
+    try { agentId = await registry.registerAgent.staticCall(cid); } catch(e) {}
     const tx = await registry.registerAgent(cid);
     showToast("Registering Agent", tx.hash);
-    console.log("TX sent:", tx.hash);
-
-    // ── STEP 3: Wait for confirmation ──
     const receipt = await tx.wait();
-    console.log("TX confirmed in block:", receipt.blockNumber);
-
-    // ── STEP 4: If staticCall failed, try topics[1] from receipt logs ──
+    
     if (!agentId || agentId === ethers.ZeroHash) {
       for (const log of receipt.logs) {
-        // AgentRegistered(bytes32 indexed agentId, address indexed ownerAddress, ...)
-        // topics[0] = event sig hash, topics[1] = agentId (first indexed), topics[2] = ownerAddress
-        if (log.topics && log.topics.length >= 2) {
-          // Match against registry contract address to be sure
-          if (log.address.toLowerCase() === REGISTRY_ADDRESS.toLowerCase()) {
-            agentId = log.topics[1]; // raw bytes32 hex
-            console.log("agentId from topics[1]:", agentId);
-            break;
-          }
+        if (log.topics && log.topics.length >= 2 && log.address.toLowerCase() === REGISTRY_ADDRESS.toLowerCase()) {
+          agentId = log.topics[1]; break;
         }
       }
     }
-
-    // ── STEP 5: If still null, fall back to RPC read ──
     if (!agentId || agentId === ethers.ZeroHash) {
-      console.log("Falling back to RPC read...");
-      // Wait a moment for node to index
       await new Promise(r => setTimeout(r, 3000));
       agentId = await registry.addressToAgentId(addr);
     }
-
-    // ── STEP 6: Update UI with whatever we got ──
     if (agentId && agentId !== ethers.ZeroHash) {
       await setAgentUI(agentId);
-      alert("\u2705 Agent registered on 0G Chain!\nID: " + agentId.slice(0,16) + "...");
+      alert("\u2705 Agent registered on 0G Chain!");
     } else {
       if (el("cb-agentid")) el("cb-agentid").textContent = "Registered \u2714";
-      if (el("cb-reputation")) el("cb-reputation").textContent = "50 / 100";
-      alert("\u2705 TX confirmed! Agent registered.\n\nReload the page to see your Agent ID in the chain bar.");
+      alert("\u2705 TX confirmed! Reload page to see ID.");
     }
-
   } catch(err) {
-    if (el("cb-agentid"))    el("cb-agentid").textContent    = "Failed — retry";
-    if (el("cb-reputation")) el("cb-reputation").textContent = "\u2014";
-    console.error("handleRegister:", err);
-    // User rejected = don't show error alert
+    if (el("cb-agentid")) el("cb-agentid").textContent = "Failed — retry";
     if (err.code === 4001 || (err.message && err.message.includes("user rejected"))) {
       if (el("cb-agentid")) el("cb-agentid").textContent = "Cancelled";
       return;
@@ -1190,22 +579,17 @@ async function handleRegister() {
   }
 }
 
-// ── DEPLOY (placeholder — Week 2) ─────────────────────────────
 async function handleDeploy() {
   if (!signer) { alert("Connect wallet first."); return; }
   const addr = await signer.getAddress();
   const agentId = await registry.addressToAgentId(addr);
-  if (!agentId || agentId === ethers.ZeroHash) {
-    alert("Register your agent first before deploying.");
-    return;
-  }
-  alert("Agent ID: " + agentId + "\n\nAgent logic (Week 2) will run on 0G Compute.\nYour on-chain identity is registered and ready.");
+  if (!agentId || agentId === ethers.ZeroHash) { alert("Register your agent first."); return; }
+  alert("Agent ID: " + agentId + "\n\nAgent logic ready.");
 }
 
-// ── SUBMIT BID (callable from console for demo) ────────────────
 async function submitBid(inventoryIdHex, bidAmountOG) {
   if (!signer) { alert("Connect wallet first."); return; }
-  const addr    = await signer.getAddress();
+  const addr = await signer.getAddress();
   const agentId = await registry.addressToAgentId(addr);
   if (!agentId || agentId === ethers.ZeroHash) { alert("Register agent first."); return; }
   try {
@@ -1213,101 +597,54 @@ async function submitBid(inventoryIdHex, bidAmountOG) {
     const tx = await auction.submitBid(agentId, inventoryIdHex, bidWei);
     showToast("Bid Submitted", tx.hash);
     await tx.wait();
-    console.log("Bid confirmed!");
-  } catch(err) {
-    console.error("submitBid:", err);
-    alert("Failed: " + err.message);
-  }
+  } catch(err) { alert("Failed: " + err.message); }
 }
 
-// ── LOCK ESCROW — corrected 3-param signature ──────────────────
 async function lockEscrow(publisherAddr, inventoryIdHex, amountOG) {
   if (!signer) { alert("Connect wallet first."); return; }
-  const addr    = await signer.getAddress();
+  const addr = await signer.getAddress();
   const agentId = await registry.addressToAgentId(addr);
   if (!agentId || agentId === ethers.ZeroHash) { alert("Register agent first."); return; }
   try {
     const amountWei = ethers.parseEther(amountOG.toString());
-    // lockEscrow(agentId, publisherAddr, inventoryId) — 3 params from ABI
     const tx = await settlement.lockEscrow(agentId, publisherAddr, inventoryIdHex, { value: amountWei });
     showToast("Escrow Locked", tx.hash);
     await tx.wait();
-    console.log("Escrow locked!");
-  } catch(err) {
-    console.error("lockEscrow:", err);
-    alert("Failed: " + err.message);
-  }
+  } catch(err) { alert("Failed: " + err.message); }
 }
 
-// ═══════════════════════════════════════════════════════════════
-// ADVERTISER AGENTIC ENGINE
-// Sequence after wallet connect:
-//   1. Register (skip if already registered)
-//   2. Read inventoryId + publisherAddr from localStorage (written by Publisher)
-//      → poll localStorage every 5s if not yet available
-//   3. Submit bid on the inventory slot (0.001 OG)
-//   4. Lock escrow (0.001 OG sent as value)
-// All amounts: 0.001 OG — minimum possible, safe to run twice
-// ═══════════════════════════════════════════════════════════════
+const ADV_BID_OG = "0.001";
+let advRunning = false;
+let lsPollTimer = null;
 
-const ADV_BID_OG   = "0.001"; // Must match publisher base price
-let   advRunning   = false;
-let   lsPollTimer  = null;
-
-// ── Live log panel ────────────────────────────────────────────
 function injectAdvAgentLog() {
   if (document.getElementById("agent-log-panel")) return;
   const panel = document.createElement("div");
   panel.id = "agent-log-panel";
-  panel.style.cssText = [
-    "position:fixed","bottom:24px","left:24px","z-index:9998",
-    "width:400px","max-height:320px","overflow-y:auto",
-    "background:#0d0d1a","border:1px solid rgba(123,47,255,0.45)",
-    "border-radius:4px","padding:16px 18px",
-    "box-shadow:0 0 28px rgba(123,47,255,0.18)",
-    "font-family:'JetBrains Mono',monospace","font-size:11px","color:#9490b8"
-  ].join(";");
-  panel.innerHTML = `
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-      <span style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:800;color:#9b59ff">
-        🤖 Advertiser Agent Log
-      </span>
-      <span id="adv-status-badge" style="
-        padding:3px 10px;border-radius:2px;font-size:10px;font-weight:700;
-        background:rgba(123,47,255,0.12);border:1px solid rgba(123,47,255,0.3);color:#9b59ff
-      ">IDLE</span>
-    </div>
-    <div id="adv-log-entries"></div>
-  `;
+  panel.style.cssText = "position:fixed;bottom:24px;left:24px;z-index:9998;width:400px;max-height:320px;overflow-y:auto;background:#0d0d1a;border:1px solid rgba(123,47,255,0.45);border-radius:4px;padding:16px 18px;box-shadow:0 0 28px rgba(123,47,255,0.18);font-family:'JetBrains Mono',monospace;font-size:11px;color:#9490b8;";
+  panel.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><span style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:800;color:#9b59ff">🤖 Advertiser Agent Log</span><span id="adv-status-badge" style="padding:3px 10px;border-radius:2px;font-size:10px;font-weight:700;background:rgba(123,47,255,0.12);border:1px solid rgba(123,47,255,0.3);color:#9b59ff">IDLE</span></div><div id="adv-log-entries"></div>`;
   document.body.appendChild(panel);
 }
 
 function advLog(msg, type) {
   const colors = { info:"#9490b8", success:"#22d3a5", warn:"#f59e0b", tx:"#9b59ff" };
   const icons  = { info:"›", success:"✓", warn:"⚠", tx:"⛓" };
-  const col    = colors[type] || colors.info;
-  const icon   = icons[type]  || icons.info;
+  const col = colors[type] || colors.info;
   const entries = document.getElementById("adv-log-entries");
   if (!entries) return;
   const row = document.createElement("div");
   row.style.cssText = "padding:4px 0;border-bottom:1px solid rgba(123,47,255,0.08);color:" + col;
-  const ts = new Date().toLocaleTimeString("en-GB", {hour:"2-digit",minute:"2-digit",second:"2-digit"});
-  row.textContent = ts + "  " + icon + "  " + msg;
+  row.textContent = new Date().toLocaleTimeString("en-GB", {hour:"2-digit",minute:"2-digit",second:"2-digit"}) + "  " + (icons[type]||icons.info) + "  " + msg;
   entries.prepend(row);
   while (entries.children.length > 40) entries.removeChild(entries.lastChild);
-  console.log("[ADV AGENT]", msg);
 }
 
 function setAdvBadge(text, color) {
   const b = document.getElementById("adv-status-badge");
   if (!b) return;
-  b.textContent = text;
-  b.style.color = color;
-  b.style.borderColor = color + "55";
-  b.style.background = color + "18";
+  b.textContent = text; b.style.color = color; b.style.borderColor = color + "55"; b.style.background = color + "18";
 }
 
-// ── Main agentic sequence ─────────────────────────────────────
 async function runAdvertiserAgent() {
   if (advRunning) return;
   advRunning = true;
@@ -1317,124 +654,81 @@ async function runAdvertiserAgent() {
 
   try {
     const addr = await signer.getAddress();
-
-    // ── STEP 1: Register ────────────────────────────────────
     advLog("Step 1 — checking registration…", "info");
     let agentId = await registry.addressToAgentId(addr);
 
     if (!agentId || agentId === ethers.ZeroHash) {
-      advLog("Not registered. Sending registerAgent TX…", "info");
+      advLog("Not registered. Sending TX…", "info");
       setAdvBadge("REGISTERING", "#9b59ff");
       const cid = "orvixa-advertiser-" + Date.now();
-      let txId = null;
-      try { txId = await registry.registerAgent.staticCall(cid); } catch(e) {}
       const tx = await registry.registerAgent(cid);
       advLog("TX sent: " + tx.hash.slice(0,18) + "…", "tx");
       showToast("Registering Advertiser", tx.hash);
       const receipt = await tx.wait();
       advLog("Confirmed block " + receipt.blockNumber, "success");
-
-      if (!txId || txId === ethers.ZeroHash) {
-        for (const log of receipt.logs) {
-          if (log.topics && log.topics.length >= 2 &&
-              log.address.toLowerCase() === REGISTRY_ADDRESS.toLowerCase()) {
-            txId = log.topics[1]; break;
-          }
-        }
-      }
-      if (!txId || txId === ethers.ZeroHash) {
-        await new Promise(r => setTimeout(r, 3000));
-        txId = await registry.addressToAgentId(addr);
-      }
-      agentId = txId;
+      await new Promise(r => setTimeout(r, 3000));
+      agentId = await registry.addressToAgentId(addr);
       await setAgentUI(agentId);
-      advLog("Registered! ID: " + agentId.slice(0,10) + "…", "success");
     } else {
       await setAgentUI(agentId);
       advLog("Already registered: " + agentId.slice(0,10) + "…", "success");
     }
 
-    // ── STEP 2: Wait for Publisher's inventoryId ────────────
     advLog("Step 2 — waiting for Publisher to list inventory…", "info");
     setAdvBadge("WAITING INVENTORY", "#f59e0b");
     const { inventoryId, publisherAddr } = await waitForInventory();
     advLog("Got inventoryId: " + inventoryId.slice(0,18) + "…", "success");
-    advLog("Publisher addr: " + publisherAddr.slice(0,10) + "…", "info");
 
-    // ── STEP 3: Submit bid ───────────────────────────────────
     advLog("Step 3 — submitting bid (" + ADV_BID_OG + " OG)…", "info");
     setAdvBadge("BIDDING", "#9b59ff");
     const bidWei = ethers.parseEther(ADV_BID_OG);
-    const bidTx  = await auction.submitBid(agentId, inventoryId, bidWei);
+    const bidTx = await auction.submitBid(agentId, inventoryId, bidWei);
     advLog("TX sent: " + bidTx.hash.slice(0,18) + "…", "tx");
     showToast("Bid Submitted", bidTx.hash);
     const bidReceipt = await bidTx.wait();
     advLog("Bid confirmed block " + bidReceipt.blockNumber, "success");
 
-    // ── STEP 4: Lock escrow ──────────────────────────────────
     advLog("Step 4 — locking escrow (" + ADV_BID_OG + " OG)…", "info");
     setAdvBadge("LOCKING ESCROW", "#9b59ff");
-    const escrowWei = ethers.parseEther(ADV_BID_OG);
-    const escTx = await settlement.lockEscrow(
-      agentId,
-      publisherAddr,
-      inventoryId,
-      { value: escrowWei }
-    );
+    const escTx = await settlement.lockEscrow(agentId, publisherAddr, inventoryId, { value: bidWei });
     advLog("TX sent: " + escTx.hash.slice(0,18) + "…", "tx");
     showToast("Escrow Locked", escTx.hash);
     const escReceipt = await escTx.wait();
     advLog("Escrow locked block " + escReceipt.blockNumber, "success");
     setAdvBadge("ESCROW LOCKED ✓", "#22d3a5");
 
-    // Update balance
     try {
       const balWei = await provider.getBalance(addr);
-      const balOG  = parseFloat(ethers.formatEther(balWei)).toFixed(3);
-      const balEl  = document.getElementById("cb-balance");
-      if (balEl) balEl.textContent = balOG + " OG";
+      if (document.getElementById("cb-balance")) document.getElementById("cb-balance").textContent = parseFloat(ethers.formatEther(balWei)).toFixed(3) + " OG";
     } catch(e) {}
 
     advLog("✅ Advertiser cycle complete: Register → Bid → Lock Escrow", "success");
-    advLog("Publisher will auto-release payment. Watch Publisher tab.", "info");
     advRunning = false;
-
   } catch(err) {
-    if (err.code === 4001 || (err.message && err.message.includes("user rejected"))) {
-      advLog("User rejected TX — agent paused", "warn");
-      setAdvBadge("PAUSED", "#f59e0b");
+    if (err.code === 4001) {
+      advLog("User rejected TX — agent paused", "warn"); setAdvBadge("PAUSED", "#f59e0b");
     } else {
-      advLog("ERROR: " + (err.reason || err.message || err), "warn");
-      setAdvBadge("ERROR", "#f43f5e");
-      console.error("[ADV AGENT ERROR]", err);
+      advLog("ERROR: " + (err.reason || err.message), "warn"); setAdvBadge("ERROR", "#f43f5e");
     }
     advRunning = false;
   }
 }
 
-// ── Poll localStorage until Publisher writes inventoryId ────────
 function waitForInventory() {
   return new Promise((resolve, reject) => {
-    const MAX_WAIT_MS = 5 * 60 * 1000; // 5 minutes
-    const started     = Date.now();
-    let   polls       = 0;
-
+    const MAX_WAIT_MS = 5 * 60 * 1000;
+    const started = Date.now();
+    let polls = 0;
     function check() {
-      const inventoryId   = localStorage.getItem("orvixa_inventoryId");
+      const inventoryId = localStorage.getItem("orvixa_inventoryId");
       const publisherAddr = localStorage.getItem("orvixa_publisherAddr");
-      const listedAt      = parseInt(localStorage.getItem("orvixa_listedAt") || "0");
-
-      // Accept only if listed within the last 10 minutes (avoids stale data)
+      const listedAt = parseInt(localStorage.getItem("orvixa_listedAt") || "0");
       const fresh = (Date.now() - listedAt) < 10 * 60 * 1000;
-
       if (inventoryId && publisherAddr && fresh) {
-        clearTimeout(lsPollTimer);
-        resolve({ inventoryId, publisherAddr });
-        return;
+        clearTimeout(lsPollTimer); resolve({ inventoryId, publisherAddr }); return;
       }
       if (Date.now() - started > MAX_WAIT_MS) {
-        reject(new Error("Timed out waiting for Publisher to list inventory. Open Publisher tab first."));
-        return;
+        reject(new Error("Timed out waiting for Publisher.")); return;
       }
       polls++;
       advLog("Waiting for Publisher listing… poll " + polls, "info");
@@ -1444,39 +738,37 @@ function waitForInventory() {
   });
 }
 
-// ── Wire up: run agent automatically after connectWallet ─────────
-const _origAdvConnect = connectWallet;
+// ── CONNECT & START WIRING ───────────────────────────────────────
 async function connectWalletAndStartAdvAgent() {
-  await _origAdvConnect();
-  if (signer) {
+  const success = await wcConnect();
+  if (success && signer) {
     setTimeout(() => runAdvertiserAgent(), 1500);
   }
 }
 
 window.addEventListener("load", () => {
-  const btn = document.getElementById("connect-wallet-btn");
-  if (btn) btn.addEventListener("click", connectWalletAndStartAdvAgent);
-
   if (window.ethereum) {
     window.ethereum.request({ method: "eth_accounts" }).then(accounts => {
       if (accounts.length > 0) connectWalletAndStartAdvAgent();
     });
     window.ethereum.on("accountsChanged", () => connectWalletAndStartAdvAgent());
-    window.ethereum.on("chainChanged",    () => window.location.reload());
+    window.ethereum.on("chainChanged", () => window.location.reload());
   }
 });
 
-// ── EXPOSE FUNCTIONS TO GLOBAL SCOPE (required for onclick= attributes) ──
-window.handleRegister        = handleRegister;
-window.handleDeploy          = handleDeploy;
-window.connectWallet         = connectWalletAndStartAdvAgent;
-window.submitBid             = submitBid;
-window.lockEscrow            = lockEscrow;
-window.runAdvertiserAgent    = runAdvertiserAgent;
+// GLOBAL EXPORTS
+window.handleRegister = handleRegister;
+window.handleDeploy = handleDeploy;
+window.wcConnect = wcConnect;
+window.wcDisconnect = wcDisconnect;
+window.submitBid = submitBid;
+window.lockEscrow = lockEscrow;
+window.runAdvertiserAgent = runAdvertiserAgent;
+window.connectWalletAndStartAdvAgent = connectWalletAndStartAdvAgent;
 
-} // end ethers guard
+}
 </script>
 
-</div><!-- /wrap -->
+</div>
 </body>
 </html>
