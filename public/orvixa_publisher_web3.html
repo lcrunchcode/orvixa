@@ -1,1208 +1,1807 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Orvixa -- Publisher Agent Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.5/ethers.umd.min.js"
-        onerror="this.onerror=null;this.src='https://unpkg.com/ethers@6.13.5/dist/ethers.umd.min.js'">
-</script>
-<style>
-  :root {
-    --bg-deep:      #07070d;
-    --bg-surface:   #0d0d1a;
-    --bg-card:      #111127;
-    --bg-card-2:    #15152e;
-    --purple-core:  #7b2fff;
-    --purple-glow:  #9b59ff;
-    --purple-soft:  rgba(123,47,255,0.18);
-    --violet:       #c084fc;
-    --cyan:         #22d3ee;
-    --green-ok:     #22d3a5;
-    --green-glow:   rgba(34,211,165,0.15);
-    --amber:        #f59e0b;
-    --red:          #f43f5e;
-    --text-bright:  #f0edff;
-    --text-mid:     #9490b8;
-    --text-dim:     #5a5780;
-    --border:       rgba(123,47,255,0.2);
-    --border-faint: rgba(123,47,255,0.08);
-    --glow-sm:      0 0 16px rgba(123,47,255,0.35);
-    --glow-md:      0 0 32px rgba(123,47,255,0.4);
-    --glow-cyan:    0 0 16px rgba(34,211,238,0.3);
-  }
- 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
- 
-  body {
-    font-family: 'Space Grotesk', sans-serif;
-    background: var(--bg-deep);
-    color: var(--text-bright);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
- 
-  body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background-image:
-      linear-gradient(rgba(123,47,255,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(123,47,255,0.04) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none; z-index: 0;
-  }
- 
-  body::after {
-    content: '';
-    position: fixed;
-    bottom: -200px; right: -200px;
-    width: 600px; height: 600px;
-    background: radial-gradient(circle, rgba(34,211,238,0.07) 0%, transparent 70%);
-    pointer-events: none; z-index: 0;
-    animation: blobFloat 10s ease-in-out infinite;
-  }
- 
-  @keyframes blobFloat {
-    0%,100% { transform: translate(0,0); }
-    50%      { transform: translate(-60px,-40px); }
-  }
- 
-  .wrap { position: relative; z-index: 1; max-width: 1360px; margin: 0 auto; padding: 24px; }
- 
-  /* ── TOPBAR ── */
-  .topbar {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 16px 28px;
-    background: rgba(13,13,26,0.85);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    backdrop-filter: blur(20px);
-    margin-bottom: 28px;
-    box-shadow: var(--glow-sm);
-          position: relative;
-  z-index: 100;
-  }
- 
-  .logo { display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 800; }
-  .logo-mark {
-    width: 36px; height: 36px;
-    background: linear-gradient(135deg, var(--cyan), var(--purple-core));
-    border-radius: 4px;
-    display: grid; place-items: center; font-size: 16px;
-    box-shadow: var(--glow-cyan);
-  }
-  .logo-name span { color: var(--cyan); }
- 
-  .topbar-right { display: flex; align-items: center; gap: 14px; }
- 
-  .wallet-dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: var(--green-ok); box-shadow: 0 0 6px var(--green-ok);
-    animation: pulse 2s ease-in-out infinite;
-  }
-  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
- 
-  .publisher-pill {
-    display: flex; align-items: center; gap: 8px;
-    padding: 8px 16px;
-    background: linear-gradient(135deg, #0a6e6e, #0891b2);
-    border-radius: 2px; font-size: 12px; font-weight: 700;
-    box-shadow: var(--glow-cyan);
-  }
- 
-  .verified-badge {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 6px 14px;
-    background: var(--green-glow);
-    border: 1px solid rgba(34,211,165,0.4);
-    border-radius: 2px; font-size: 11px; font-weight: 700;
-    color: var(--green-ok); letter-spacing: 0.3px;
-  }
- 
-  .verified-badge::before {
-    content: '✓';
-    width: 16px; height: 16px; background: var(--green-ok);
-    border-radius: 50%; display: grid; place-items: center;
-    font-size: 9px; color: var(--bg-deep); font-weight: 900;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orvixa -- Publisher Agent Dashboard</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.5/ethers.umd.min.js"
+    onerror="this.onerror=null;this.src='https://unpkg.com/ethers@6.13.5/dist/ethers.umd.min.js'">
+    </script>
+  <style>
+    :root {
+      --bg-deep: #07070d;
+      --bg-surface: #0d0d1a;
+      --bg-card: #111127;
+      --bg-card-2: #15152e;
+      --purple-core: #7b2fff;
+      --purple-glow: #9b59ff;
+      --purple-soft: rgba(123, 47, 255, 0.18);
+      --violet: #c084fc;
+      --cyan: #22d3ee;
+      --green-ok: #22d3a5;
+      --green-glow: rgba(34, 211, 165, 0.15);
+      --amber: #f59e0b;
+      --red: #f43f5e;
+      --text-bright: #f0edff;
+      --text-mid: #9490b8;
+      --text-dim: #5a5780;
+      --border: rgba(123, 47, 255, 0.2);
+      --border-faint: rgba(123, 47, 255, 0.08);
+      --glow-sm: 0 0 16px rgba(123, 47, 255, 0.35);
+      --glow-md: 0 0 32px rgba(123, 47, 255, 0.4);
+      --glow-cyan: 0 0 16px rgba(34, 211, 238, 0.3);
+    }
 
-  /* ── CONNECTED PROFILE UI ── */
-  .dropdown-card {
-    position: absolute; top: 100%; right: 0; width: 250px;
-    background: var(--bg-card); color: var(--text-bright);
-    border: 1px solid var(--border); border-radius: 4px;
-    padding: 16px; box-shadow: var(--glow-md); z-index: 1000; margin-top: 8px;
-  }
-  .balance-card, .address-card {
-    background: var(--bg-deep); border: 1px solid var(--border-faint);
-    padding: 10px; border-radius: 4px; margin-bottom: 12px;
-  }
-  .dropdown-card .label {
-    font-size: 11px; color: var(--text-dim); display: block;
-    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;
-  }
-  #ui-balance, #full-address { font-family: 'JetBrains Mono', monospace; font-size: 13px; word-break: break-all; }
-  #disconnect-btn {
-    width: 100%; background: rgba(244,63,94,0.1); border: 1px solid rgba(244,63,94,0.3);
-    color: var(--red); padding: 8px; border-radius: 4px; cursor: pointer;
-    font-family: 'Space Grotesk', sans-serif; font-weight: 700; transition: all 0.2s; letter-spacing: 0.5px;
-  }
-  #disconnect-btn:hover { background: rgba(244,63,94,0.2); }
- 
-  /* ── CHAIN BAR ── */
-  .chain-bar {
-    background: var(--bg-card); border: 1px solid var(--border); border-radius: 4px;
-    padding: 14px 22px; display: flex; align-items: center;
-    justify-content: space-between; margin-bottom: 24px;
-    font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim);
-  }
-  .chain-bar-item { display: flex; align-items: center; gap: 8px; }
-  .chain-bar-value { color: var(--text-bright); font-weight: 600; }
- 
-  /* ── STAT STRIP ── */
-  .stat-strip {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;
-  }
- 
-  .stat-box {
-    background: var(--bg-card); border: 1px solid var(--border);
-    border-radius: 4px; padding: 22px 24px; position: relative; overflow: hidden;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
- 
-  .stat-box:hover { transform: translateY(-3px); box-shadow: var(--glow-md); }
- 
-  .stat-box::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-    background: linear-gradient(90deg, var(--cyan), var(--purple-core));
-  }
- 
-  .stat-box.green::before { background: linear-gradient(90deg, var(--green-ok), var(--cyan)); }
-  .stat-box.amber::before { background: linear-gradient(90deg, var(--amber), #f97316); }
- 
-  .stat-label { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 10px; }
-  .stat-value { font-size: 30px; font-weight: 800; color: var(--text-bright); }
-  .stat-value.green { color: var(--green-ok); }
-  .stat-value.cyan  { color: var(--cyan); }
-  .stat-sub { font-size: 11px; color: var(--text-dim); margin-top: 6px; font-family: 'JetBrains Mono', monospace; }
-  .stat-icon { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 28px; opacity: 0.12; }
- 
-  /* ── MAIN GRID ── */
-  .main-grid { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 20px; margin-bottom: 24px; }
- 
-  /* ── CARDS ── */
-  .card {
-    background: var(--bg-card); border: 1px solid var(--border);
-    border-radius: 4px; padding: 24px; position: relative; overflow: hidden;
-  }
- 
-  .card-glow {
-    position: absolute; top: -40px; right: -40px;
-    width: 120px; height: 120px;
-    background: radial-gradient(circle, rgba(34,211,238,0.1) 0%, transparent 70%);
-    pointer-events: none;
-  }
- 
-  .card-title {
-    font-size: 13px; font-weight: 700; color: var(--text-mid);
-    text-transform: uppercase; letter-spacing: 0.18em;
-    margin-bottom: 20px; display: flex; align-items: center; gap: 8px;
-  }
- 
-  .card-title-icon {
-    width: 28px; height: 28px; border-radius: 2px;
-    background: rgba(34,211,238,0.12); border: 1px solid rgba(34,211,238,0.2);
-    display: grid; place-items: center; font-size: 13px;
-  }
- 
-  /* ── METRIC ROWS ── */
-  .metric-row { display: flex; justify-content: space-between; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--border-faint); }
-  .metric-row:last-child { border-bottom: none; }
-  .metric-key  { font-size: 13px; color: var(--text-mid); }
-  .metric-val  { font-size: 14px; font-weight: 700; color: var(--text-bright); font-family: 'JetBrains Mono', monospace; }
-  .metric-val.green  { color: var(--green-ok); }
-  .metric-val.cyan   { color: var(--cyan); }
-  .metric-val.amber  { color: var(--amber); }
- 
-  /* ── AUCTION CARDS ── */
-  .auction-item {
-    padding: 16px; border: 1px solid var(--border);
-    border-radius: 4px; margin-bottom: 14px;
-    background: var(--bg-deep);
-    position: relative; overflow: hidden;
-    transition: border-color 0.2s;
-  }
- 
-  .auction-item:hover { border-color: var(--purple-glow); }
- 
-  .auction-item.hot { border-color: rgba(34,211,165,0.4); }
- 
-  .auction-item::before {
-    content: ''; position: absolute; top: 0; left: 0;
-    width: 3px; height: 100%;
-    background: linear-gradient(180deg, var(--purple-core), var(--cyan));
-  }
- 
-  .auction-item.hot::before { background: linear-gradient(180deg, var(--green-ok), var(--cyan)); }
- 
-  .auction-top {
-    display: flex; justify-content: space-between; align-items: flex-start;
-    margin-bottom: 12px;
-  }
- 
-  .auction-slot-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
-  .auction-slot-meta { font-size: 11px; color: var(--text-dim); }
- 
-  .auction-badge {
-    padding: 4px 10px; border-radius: 2px;
-    font-size: 10px; font-weight: 700; letter-spacing: 0.5px; white-space: nowrap;
-  }
- 
-  .badge-live    { background: var(--green-glow); color: var(--green-ok); border: 1px solid rgba(34,211,165,0.4); }
-  .badge-pending { background: rgba(245,158,11,0.12); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
-  .badge-closed  { background: rgba(244,63,94,0.1); color: var(--red); border: 1px solid rgba(244,63,94,0.3); }
- 
-  .auction-bid-row {
-    display: flex; gap: 20px; margin-bottom: 10px;
-  }
-  .auction-bid-item { flex: 1; }
-  .auction-bid-label { font-size: 10px; color: var(--text-dim); margin-bottom: 3px; }
-  .auction-bid-val   { font-size: 15px; font-weight: 800; color: var(--text-bright); font-family: 'JetBrains Mono', monospace; }
-  .auction-bid-val.highlight { color: var(--green-ok); }
- 
-  .progress-bar { background: var(--border-faint); height: 5px; border-radius: 0; overflow: hidden; margin: 8px 0; }
-  .progress-fill { height: 100%; border-radius: 0; background: linear-gradient(90deg, var(--purple-core), var(--cyan)); transition: width 0.5s; }
-  .progress-fill.urgent { background: linear-gradient(90deg, var(--green-ok), var(--amber)); }
- 
-  .auction-footer {
-    display: flex; justify-content: space-between; align-items: center;
-    font-size: 11px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;
-    margin-top: 10px;
-  }
- 
-  .btn-accept {
-    padding: 7px 16px; border: none; border-radius: 2px;
-    background: linear-gradient(135deg, var(--green-ok), #0891b2);
-    color: var(--bg-deep); font-family: 'Space Grotesk', sans-serif;
-    font-size: 11px; font-weight: 800; cursor: pointer;
-    box-shadow: 0 0 12px rgba(34,211,165,0.3);
-    transition: all 0.2s;
-  }
- 
-  .btn-accept:hover { transform: translateY(-1px); box-shadow: 0 0 20px rgba(34,211,165,0.5); }
- 
-  /* ── LIST INVENTORY FORM ── */
-  .list-panel {
-    background: var(--bg-card); border: 1px solid var(--border);
-    border-radius: 4px; padding: 28px; margin-bottom: 24px;
-  }
- 
-  .panel-header {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 28px; padding-bottom: 18px; border-bottom: 1px solid var(--border);
-  }
- 
-  .panel-title { font-size: 18px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.15em;}
-  .panel-subtitle { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
- 
-  .section-label {
-    font-size: 11px; font-weight: 700; color: var(--text-dim);
-    text-transform: uppercase; letter-spacing: 0.18em;
-    margin: 24px 0 14px; display: flex; align-items: center; gap: 10px;
-  }
- 
-  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border-faint); }
- 
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-  .form-grid.three { grid-template-columns: 1fr 1fr 1fr; }
-  .form-grid.full  { grid-template-columns: 1fr; }
- 
-  .field { display: flex; flex-direction: column; gap: 8px; }
-  .field label { font-size: 11px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.8px; }
- 
-  .field input, .field select, .field textarea {
-    background: var(--bg-deep); border: 1px solid var(--border);
-    border-radius: 4px; padding: 11px 14px;
-    color: var(--text-bright); font-family: 'Space Grotesk', sans-serif;
-    font-size: 13px; outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    appearance: none;
-  }
- 
-  .field input:focus, .field select:focus, .field textarea:focus {
-    border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(34,211,238,0.12);
-  }
- 
-  .field option { background: var(--bg-deep); }
- 
-  .storage-preview {
-    background: var(--bg-deep); border: 1px dashed var(--border);
-    border-radius: 4px; padding: 16px; margin-top: 14px;
-  }
- 
-  .storage-preview-title {
-    font-size: 11px; color: var(--text-dim); font-weight: 700;
-    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;
-    display: flex; align-items: center; gap: 6px;
-  }
- 
-  .storage-preview-title::before {
-    content: '';
-    width: 8px; height: 8px; border-radius: 50%;
-    background: var(--cyan); box-shadow: 0 0 6px var(--cyan);
-  }
- 
-  .storage-hash { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--cyan); word-break: break-all; }
- 
-  .toggle-list { display: flex; flex-direction: column; gap: 6px; }
- 
-  .toggle-row {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 12px 16px; background: var(--bg-deep);
-    border: 1px solid var(--border-faint); border-radius: 4px;
-  }
- 
-  .toggle-label { font-size: 13px; color: var(--text-mid); }
- 
-  .toggle {
-    width: 42px; height: 24px; background: var(--bg-surface);
-    border: 1px solid var(--border); border-radius: 999px;
-    position: relative; cursor: pointer; transition: background 0.3s;
-  }
- 
-  .toggle.on { background: var(--cyan); border-color: var(--cyan); box-shadow: var(--glow-cyan); }
-  .toggle::after { content: ''; position: absolute; width: 18px; height: 18px; background: white; border-radius: 50%; top: 2px; left: 2px; transition: left 0.3s; }
-  .toggle.on::after { left: 20px; }
- 
-  .btn-row { display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); }
- 
-  .btn { padding: 12px 24px; border-radius: 4px; font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; border: none; transition: all 0.2s; letter-spacing: 0.12em; text-transform: uppercase; }
-  .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text-mid); }
-  .btn-ghost:hover { border-color: var(--cyan); color: var(--text-bright); }
-  .btn-primary { background: linear-gradient(135deg, var(--purple-core), #5b0fd4); color: white; box-shadow: var(--glow-sm); }
-  .btn-primary:hover { transform: translateY(-2px); box-shadow: var(--glow-md); }
-  .btn-launch { background: linear-gradient(135deg, var(--cyan), var(--purple-core)); color: var(--bg-deep); font-weight: 800; box-shadow: var(--glow-cyan); }
-  .btn-launch:hover { transform: translateY(-2px); }
- 
-  /* ── SETTLEMENT LOG ── */
-  .settlement-log { background: var(--bg-card); border: 1px solid var(--border); border-radius: 4px; padding: 24px; }
- 
-  .log-item {
-    display: flex; align-items: center; gap: 14px;
-    padding: 14px 16px; border-radius: 4px;
-    background: var(--bg-deep); border: 1px solid var(--border-faint);
-    margin-bottom: 10px;
-    transition: border-color 0.2s;
-  }
- 
-  .log-item:hover { border-color: var(--border); }
-  .log-item:last-child { margin-bottom: 0; }
- 
-  .log-icon { font-size: 20px; flex-shrink: 0; }
-  .log-body { flex: 1; min-width: 0; }
-  .log-title { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
-  .log-meta  { font-size: 11px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace; }
- 
-  .log-amount {
-    font-size: 15px; font-weight: 800; color: var(--green-ok);
-    font-family: 'JetBrains Mono', monospace;
-  }
- 
-  .log-chain-link {
-    padding: 4px 10px; border-radius: 2px;
-    background: var(--purple-soft); border: 1px solid var(--border);
-    font-size: 10px; font-weight: 700; color: var(--purple-glow);
-    cursor: pointer; white-space: nowrap;
-  }
- 
-  @media (max-width: 1100px) {
-    .main-grid { grid-template-columns: 1fr 1fr; }
-    .stat-strip { grid-template-columns: 1fr 1fr; }
-  }
-  @media (max-width: 640px) {
-    .main-grid { grid-template-columns: 1fr; }
-    .form-grid, .form-grid.three { grid-template-columns: 1fr; }
-    .topbar { flex-direction: column; gap: 14px; }
-    .topbar-right { flex-wrap: wrap; justify-content: center; }
-  }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  #toast {
-    display:none; position:fixed; bottom:24px; right:24px; z-index:9999;
-    background:#111127; border:1px solid rgba(34,211,165,0.5);
-    border-radius:4px; padding:16px 20px; max-width:380px;
-    box-shadow:0 0 24px rgba(34,211,165,0.2); font-family:'JetBrains Mono',monospace;
-  }
-  #toast.show { display:block; animation:fadeIn .3s ease; }
-  @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
-  #toast-title { font-size:13px; font-weight:700; color:#22d3a5; margin-bottom:6px; font-family:'Space Grotesk',sans-serif; }
-  #toast-hash  { font-size:11px; color:#9490b8; word-break:break-all; }
-  #toast-link  { display:inline-block; margin-top:8px; font-size:11px; font-weight:700; color:#9b59ff; text-decoration:none; }
-  #toast-link:hover { color:#f0edff; }
-  #toast-close { position:absolute; top:10px; right:14px; background:none; border:none; color:#5a5780; cursor:pointer; font-size:16px; }
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--bg-deep);
+      color: var(--text-bright);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
 
-</style>
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(123, 47, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(123, 47, 255, 0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -200px;
+      right: -200px;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(34, 211, 238, 0.07) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+      animation: blobFloat 10s ease-in-out infinite;
+    }
+
+    @keyframes blobFloat {
+
+      0%,
+      100% {
+        transform: translate(0, 0);
+      }
+
+      50% {
+        transform: translate(-60px, -40px);
+      }
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 28px;
+      background: rgba(13, 13, 26, 0.85);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      backdrop-filter: blur(20px);
+      margin-bottom: 28px;
+      box-shadow: var(--glow-sm);
+      position: relative;
+      z-index: 100;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .logo-mark {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--cyan), var(--purple-core));
+      border-radius: 4px;
+      display: grid;
+      place-items: center;
+      font-size: 16px;
+      box-shadow: var(--glow-cyan);
+    }
+
+    .logo-name span {
+      color: var(--cyan);
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .wallet-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green-ok);
+      box-shadow: 0 0 6px var(--green-ok);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.4;
+      }
+    }
+
+    .publisher-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: linear-gradient(135deg, #0a6e6e, #0891b2);
+      border-radius: 2px;
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: var(--glow-cyan);
+    }
+
+    .verified-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: var(--green-glow);
+      border: 1px solid rgba(34, 211, 165, 0.4);
+      border-radius: 2px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--green-ok);
+      letter-spacing: 0.3px;
+    }
+
+    .verified-badge::before {
+      content: '✓';
+      width: 16px;
+      height: 16px;
+      background: var(--green-ok);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 9px;
+      color: var(--bg-deep);
+      font-weight: 900;
+    }
+
+    /* ── CONNECTED PROFILE UI ── */
+    .dropdown-card {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      width: 250px;
+      background: var(--bg-card);
+      color: var(--text-bright);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 16px;
+      box-shadow: var(--glow-md);
+      z-index: 1000;
+      margin-top: 8px;
+    }
+
+    .balance-card,
+    .address-card {
+      background: var(--bg-deep);
+      border: 1px solid var(--border-faint);
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+    }
+
+    .dropdown-card .label {
+      font-size: 11px;
+      color: var(--text-dim);
+      display: block;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    #ui-balance,
+    #full-address {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      word-break: break-all;
+    }
+
+    #disconnect-btn {
+      width: 100%;
+      background: rgba(244, 63, 94, 0.1);
+      border: 1px solid rgba(244, 63, 94, 0.3);
+      color: var(--red);
+      padding: 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      transition: all 0.2s;
+      letter-spacing: 0.5px;
+    }
+
+    #disconnect-btn:hover {
+      background: rgba(244, 63, 94, 0.2);
+    }
+
+    /* ── CHAIN BAR ── */
+    .chain-bar {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 14px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+
+    .chain-bar-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .chain-bar-value {
+      color: var(--text-bright);
+      font-weight: 600;
+    }
+
+    /* ── STAT STRIP ── */
+    .stat-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 22px 24px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .stat-box:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--glow-md);
+    }
+
+    .stat-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--cyan), var(--purple-core));
+    }
+
+    .stat-box.green::before {
+      background: linear-gradient(90deg, var(--green-ok), var(--cyan));
+    }
+
+    .stat-box.amber::before {
+      background: linear-gradient(90deg, var(--amber), #f97316);
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 10px;
+    }
+
+    .stat-value {
+      font-size: 30px;
+      font-weight: 800;
+      color: var(--text-bright);
+    }
+
+    .stat-value.green {
+      color: var(--green-ok);
+    }
+
+    .stat-value.cyan {
+      color: var(--cyan);
+    }
+
+    .stat-sub {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 6px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .stat-icon {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 28px;
+      opacity: 0.12;
+    }
+
+    /* ── MAIN GRID ── */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-glow {
+      position: absolute;
+      top: -40px;
+      right: -40px;
+      width: 120px;
+      height: 120px;
+      background: radial-gradient(circle, rgba(34, 211, 238, 0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-mid);
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-title-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 2px;
+      background: rgba(34, 211, 238, 0.12);
+      border: 1px solid rgba(34, 211, 238, 0.2);
+      display: grid;
+      place-items: center;
+      font-size: 13px;
+    }
+
+    /* ── METRIC ROWS ── */
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--border-faint);
+    }
+
+    .metric-row:last-child {
+      border-bottom: none;
+    }
+
+    .metric-key {
+      font-size: 13px;
+      color: var(--text-mid);
+    }
+
+    .metric-val {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-bright);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .metric-val.green {
+      color: var(--green-ok);
+    }
+
+    .metric-val.cyan {
+      color: var(--cyan);
+    }
+
+    .metric-val.amber {
+      color: var(--amber);
+    }
+
+    /* ── AUCTION CARDS ── */
+    .auction-item {
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      margin-bottom: 14px;
+      background: var(--bg-deep);
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    .auction-item:hover {
+      border-color: var(--purple-glow);
+    }
+
+    .auction-item.hot {
+      border-color: rgba(34, 211, 165, 0.4);
+    }
+
+    .auction-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: linear-gradient(180deg, var(--purple-core), var(--cyan));
+    }
+
+    .auction-item.hot::before {
+      background: linear-gradient(180deg, var(--green-ok), var(--cyan));
+    }
+
+    .auction-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .auction-slot-name {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .auction-slot-meta {
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+
+    .auction-badge {
+      padding: 4px 10px;
+      border-radius: 2px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    .badge-live {
+      background: var(--green-glow);
+      color: var(--green-ok);
+      border: 1px solid rgba(34, 211, 165, 0.4);
+    }
+
+    .badge-pending {
+      background: rgba(245, 158, 11, 0.12);
+      color: var(--amber);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .badge-closed {
+      background: rgba(244, 63, 94, 0.1);
+      color: var(--red);
+      border: 1px solid rgba(244, 63, 94, 0.3);
+    }
+
+    .auction-bid-row {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 10px;
+    }
+
+    .auction-bid-item {
+      flex: 1;
+    }
+
+    .auction-bid-label {
+      font-size: 10px;
+      color: var(--text-dim);
+      margin-bottom: 3px;
+    }
+
+    .auction-bid-val {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text-bright);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .auction-bid-val.highlight {
+      color: var(--green-ok);
+    }
+
+    .progress-bar {
+      background: var(--border-faint);
+      height: 5px;
+      border-radius: 0;
+      overflow: hidden;
+      margin: 8px 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 0;
+      background: linear-gradient(90deg, var(--purple-core), var(--cyan));
+      transition: width 0.5s;
+    }
+
+    .progress-fill.urgent {
+      background: linear-gradient(90deg, var(--green-ok), var(--amber));
+    }
+
+    .auction-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+      margin-top: 10px;
+    }
+
+    .btn-accept {
+      padding: 7px 16px;
+      border: none;
+      border-radius: 2px;
+      background: linear-gradient(135deg, var(--green-ok), #0891b2);
+      color: var(--bg-deep);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 0 12px rgba(34, 211, 165, 0.3);
+      transition: all 0.2s;
+    }
+
+    .btn-accept:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 20px rgba(34, 211, 165, 0.5);
+    }
+
+    /* ── LIST INVENTORY FORM ── */
+    .list-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 28px;
+      margin-bottom: 24px;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .panel-title {
+      font-size: 18px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+
+    .panel-subtitle {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-top: 4px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      margin: 24px 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-faint);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .form-grid.three {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .form-grid.full {
+      grid-template-columns: 1fr;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      background: var(--bg-deep);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 11px 14px;
+      color: var(--text-bright);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      appearance: none;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.12);
+    }
+
+    .field option {
+      background: var(--bg-deep);
+    }
+
+    .storage-preview {
+      background: var(--bg-deep);
+      border: 1px dashed var(--border);
+      border-radius: 4px;
+      padding: 16px;
+      margin-top: 14px;
+    }
+
+    .storage-preview-title {
+      font-size: 11px;
+      color: var(--text-dim);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .storage-preview-title::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 6px var(--cyan);
+    }
+
+    .storage-hash {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--cyan);
+      word-break: break-all;
+    }
+
+    .toggle-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background: var(--bg-deep);
+      border: 1px solid var(--border-faint);
+      border-radius: 4px;
+    }
+
+    .toggle-label {
+      font-size: 13px;
+      color: var(--text-mid);
+    }
+
+    .toggle {
+      width: 42px;
+      height: 24px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .toggle.on {
+      background: var(--cyan);
+      border-color: var(--cyan);
+      box-shadow: var(--glow-cyan);
+    }
+
+    .toggle::after {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      background: white;
+      border-radius: 50%;
+      top: 2px;
+      left: 2px;
+      transition: left 0.3s;
+    }
+
+    .toggle.on::after {
+      left: 20px;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border-radius: 4px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-mid);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--cyan);
+      color: var(--text-bright);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--purple-core), #5b0fd4);
+      color: white;
+      box-shadow: var(--glow-sm);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--glow-md);
+    }
+
+    .btn-launch {
+      background: linear-gradient(135deg, var(--cyan), var(--purple-core));
+      color: var(--bg-deep);
+      font-weight: 800;
+      box-shadow: var(--glow-cyan);
+    }
+
+    .btn-launch:hover {
+      transform: translateY(-2px);
+    }
+
+    /* ── SETTLEMENT LOG ── */
+    .settlement-log {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 24px;
+    }
+
+    .log-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      border-radius: 4px;
+      background: var(--bg-deep);
+      border: 1px solid var(--border-faint);
+      margin-bottom: 10px;
+      transition: border-color 0.2s;
+    }
+
+    .log-item:hover {
+      border-color: var(--border);
+    }
+
+    .log-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .log-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .log-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .log-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+
+    .log-meta {
+      font-size: 11px;
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .log-amount {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--green-ok);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .log-chain-link {
+      padding: 4px 10px;
+      border-radius: 2px;
+      background: var(--purple-soft);
+      border: 1px solid var(--border);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--purple-glow);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 1100px) {
+      .main-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .stat-strip {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-grid,
+      .form-grid.three {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .topbar-right {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+    }
+
+    #toast {
+      display: none;
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      background: #111127;
+      border: 1px solid rgba(34, 211, 165, 0.5);
+      border-radius: 4px;
+      padding: 16px 20px;
+      max-width: 380px;
+      box-shadow: 0 0 24px rgba(34, 211, 165, 0.2);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    #toast.show {
+      display: block;
+      animation: fadeIn .3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    #toast-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #22d3a5;
+      margin-bottom: 6px;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    #toast-hash {
+      font-size: 11px;
+      color: #9490b8;
+      word-break: break-all;
+    }
+
+    #toast-link {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #9b59ff;
+      text-decoration: none;
+    }
+
+    #toast-link:hover {
+      color: #f0edff;
+    }
+
+    #toast-close {
+      position: absolute;
+      top: 10px;
+      right: 14px;
+      background: none;
+      border: none;
+      color: #5a5780;
+      cursor: pointer;
+      font-size: 16px;
+    }
+  </style>
 </head>
+
 <body>
-<div class="wrap">
-  <div class="topbar">
-    <div class="logo">
-      <div class="logo-mark">V</div>
-      <div class="logo-name">Orvixa <span>PUBLISHER</span></div>
-    </div>
-    <div class="topbar-right">
-      <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--green-ok);font-weight:700;">
-        <div class="wallet-dot"></div>0G Mainnet
+  <div class="wrap">
+    <div class="topbar">
+      <div class="logo">
+        <div class="logo-mark">V</div>
+        <div class="logo-name">Orvixa <span>PUBLISHER</span></div>
       </div>
-      <div class="verified-badge">Verified on OG Chain</div>
-      
-      <div id="wallet-container" style="position: relative; display: inline-block;">
-        <button id="connect-wallet-btn" class="publisher-pill" style="cursor:pointer;border:none;">Connect Wallet</button>
+      <div class="topbar-right">
+        <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--green-ok);font-weight:700;">
+          <div class="wallet-dot"></div>0G Mainnet
+        </div>
+        <div class="verified-badge">Verified on OG Chain</div>
 
-        <div id="connected-profile-ui" style="display: none; cursor: pointer;" onclick="toggleDropdown()">
-          <div class="publisher-pill profile-badge" style="display: flex; align-items: center; gap: 8px;">
-            <div class="wallet-dot"></div>
-            <span id="header-address">0x...</span>
-          </div>
+        <div id="wallet-container" style="position: relative; display: inline-block;">
+          <button id="connect-wallet-btn" class="publisher-pill" style="cursor:pointer;border:none;">Connect
+            Wallet</button>
 
-          <div id="profile-dropdown" class="dropdown-card" style="display: none;">
-            <div class="balance-card">
-              <span class="label">Balance</span>
-              <span id="ui-balance">0 OG</span>
+          <div id="connected-profile-ui" style="display: none; cursor: pointer;" onclick="toggleDropdown()">
+            <div class="publisher-pill profile-badge" style="display: flex; align-items: center; gap: 8px;">
+              <div class="wallet-dot"></div>
+              <span id="header-address">0x...</span>
             </div>
-            <div class="address-card">
-              <span class="label">Wallet Address</span>
-              <span id="full-address">0x...</span>
+
+            <div id="profile-dropdown" class="dropdown-card" style="display: none;">
+              <div class="balance-card">
+                <span class="label">Balance</span>
+                <span id="ui-balance">0 OG</span>
+              </div>
+              <div class="address-card">
+                <span class="label">Wallet Address</span>
+                <span id="full-address">0x...</span>
+              </div>
+              <button id="disconnect-btn" onclick="disconnectWalletUI()">[-> Disconnect</button>
             </div>
-            <button id="disconnect-btn" onclick="disconnectWalletUI()">[-> Disconnect</button>
           </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="chain-bar">
-    <div class="chain-bar-item"><span style="color:var(--text-dim)">Publisher ID:</span><span class="chain-bar-value" id="cb-pubid">--</span></div>
-    <div class="chain-bar-item"><span style="color:var(--text-dim)">Reputation:</span><span class="chain-bar-value" style="color:var(--green-ok)" id="cb-reputation">--</span></div>
-    <div class="chain-bar-item"><span style="color:var(--text-dim)">Contract Balance:</span><span class="chain-bar-value" style="color:var(--amber)" id="cb-escrow">--</span></div>
-    <div class="chain-bar-item"><span style="color:var(--text-dim)">Wallet Balance:</span><span class="chain-bar-value" id="cb-balance">--</span></div>
-    <div class="chain-bar-item"><span style="color:var(--text-dim)">Network:</span><span class="chain-bar-value" style="color:var(--purple-glow)">0G Mainnet · Chain 16661</span></div>
-  </div>
-<div class="stat-strip">
-    <div class="stat-box">
-      <div class="stat-label">Active Inventory</div>
-      <div class="stat-value cyan">24</div>
-      <div class="stat-sub">slots live on 0G Chain</div>
-      <div class="stat-icon"></div>
+    <div class="chain-bar">
+      <div class="chain-bar-item"><span style="color:var(--text-dim)">Publisher ID:</span><span class="chain-bar-value"
+          id="cb-pubid">--</span></div>
+      <div class="chain-bar-item"><span style="color:var(--text-dim)">Reputation:</span><span class="chain-bar-value"
+          style="color:var(--green-ok)" id="cb-reputation">--</span></div>
+      <div class="chain-bar-item"><span style="color:var(--text-dim)">Contract Balance:</span><span
+          class="chain-bar-value" style="color:var(--amber)" id="cb-escrow">--</span></div>
+      <div class="chain-bar-item"><span style="color:var(--text-dim)">Wallet Balance:</span><span
+          class="chain-bar-value" id="cb-balance">--</span></div>
+      <div class="chain-bar-item"><span style="color:var(--text-dim)">Network:</span><span class="chain-bar-value"
+          style="color:var(--purple-glow)">0G Mainnet · Chain 16661</span></div>
     </div>
-    <div class="stat-box green">
-      <div class="stat-label">Bids Received</div>
-      <div class="stat-value green">847</div>
-      <div class="stat-sub">all verifiable on-chain</div>
-      <div class="stat-icon"></div>
+    <div class="stat-strip">
+      <div class="stat-box">
+        <div class="stat-label">Active Inventory</div>
+        <div class="stat-value cyan">24</div>
+        <div class="stat-sub">slots live on 0G Chain</div>
+        <div class="stat-icon"></div>
+      </div>
+      <div class="stat-box green">
+        <div class="stat-label">Bids Received</div>
+        <div class="stat-value green">847</div>
+        <div class="stat-sub">all verifiable on-chain</div>
+        <div class="stat-icon"></div>
+      </div>
+      <div class="stat-box amber">
+        <div class="stat-label">Revenue This Month</div>
+        <div class="stat-value" style="font-size:26px">121 OG</div>
+        <div class="stat-sub">≈ $18,920 USD</div>
+        <div class="stat-icon"></div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Fill Rate</div>
+        <div class="stat-value" style="color:var(--green-ok)">94%</div>
+        <div class="stat-sub">industry avg: 68%</div>
+        <div class="stat-icon"></div>
+      </div>
     </div>
-    <div class="stat-box amber">
-      <div class="stat-label">Revenue This Month</div>
-      <div class="stat-value" style="font-size:26px">121 OG</div>
-      <div class="stat-sub">≈ $18,920 USD</div>
-      <div class="stat-icon"></div>
+
+    <div class="main-grid">
+
+      <div class="card">
+        <div class="card-glow"></div>
+        <div class="card-title">
+          <div class="card-title-icon"></div>
+          Live Auctions
+        </div>
+
+        <div class="auction-item hot">
+          <div class="auction-top">
+            <div>
+              <div class="auction-slot-name">Homepage Hero (728×90)</div>
+              <div class="auction-slot-meta">Tech & Finance · Above the fold · 0G Storage: 0xabc1…</div>
+            </div>
+            <span class="auction-badge badge-live">● LIVE</span>
+          </div>
+          <div class="auction-bid-row">
+            <div class="auction-bid-item">
+              <div class="auction-bid-label">Highest Bid</div>
+              <div class="auction-bid-val highlight">0.085 OG</div>
+            </div>
+            <div class="auction-bid-item">
+              <div class="auction-bid-label">Total Bids</div>
+              <div class="auction-bid-val">42</div>
+            </div>
+            <div class="auction-bid-item">
+              <div class="auction-bid-label">Base Price</div>
+              <div class="auction-bid-val">0.001 OG</div>
+            </div>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill urgent" style="width:92%"></div>
+          </div>
+          <div class="auction-footer">
+            <span>⏱ Ends in 8 min</span>
+            <button class="btn-accept">✓ Accept Highest Bid</button>
+          </div>
+        </div>
+
+        <div class="auction-item">
+          <div class="auction-top">
+            <div>
+              <div class="auction-slot-name">Sidebar Recommended (300×250)</div>
+              <div class="auction-slot-meta">All Categories · Mid-page · 0G Storage: 0xdef4…</div>
+            </div>
+            <span class="auction-badge badge-live">● LIVE</span>
+          </div>
+          <div class="auction-bid-row">
+            <div class="auction-bid-item">
+              <div class="auction-bid-label">Highest Bid</div>
+              <div class="auction-bid-val highlight">0.042 OG</div>
+            </div>
+            <div class="auction-bid-item">
+              <div class="auction-bid-label">Total Bids</div>
+              <div class="auction-bid-val">28</div>
+            </div>
+            <div class="auction-bid-item">
+              <div class="auction-bid-label">Base Price</div>
+              <div class="auction-bid-val">0.001 OG</div>
+            </div>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width:45%"></div>
+          </div>
+          <div class="auction-footer">
+            <span>⏱ Ends in 4h 12m</span>
+            <button class="btn-accept">✓ Accept Highest Bid</button>
+          </div>
+        </div>
+
+        <div class="auction-item">
+          <div class="auction-top">
+            <div>
+              <div class="auction-slot-name">Newsletter Sponsorship (600×200)</div>
+              <div class="auction-slot-meta">Tech & Crypto · Email · 0G Storage: 0x881c…</div>
+            </div>
+            <span class="auction-badge badge-pending">PENDING</span>
+          </div>
+          <div class="auction-bid-row">
+            <div class="auction-bid-item">
+              <div class="auction-bid-label">Highest Bid</div>
+              <div class="auction-bid-val highlight">0.125 OG</div>
+            </div>
+            <div class="auction-bid-item">
+              <div class="auction-bid-label">Total Bids</div>
+              <div class="auction-bid-val">56</div>
+            </div>
+            <div class="auction-bid-item">
+              <div class="auction-bid-label">Base Price</div>
+              <div class="auction-bid-val">0.001 OG</div>
+            </div>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width:70%"></div>
+          </div>
+          <div class="auction-footer">
+            <span>⏱ Ends in 2h 30m</span>
+            <button class="btn-accept">✓ Accept Highest Bid</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-glow"></div>
+        <div class="card-title">
+          <div class="card-title-icon"></div>
+          Revenue & Payouts
+        </div>
+        <div class="metric-row">
+          <span class="metric-key">Revenue This Month</span>
+          <span class="metric-val green">121 OG</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-key">Avg Bid Per Slot</span>
+          <span class="metric-val">0.143 OG</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-key">Fill Rate</span>
+          <span class="metric-val green">94%</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-key">Pending in Escrow</span>
+          <span class="metric-val amber">2.4 OG</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-key">Available Withdrawal</span>
+          <span class="metric-val green">8.7 OG</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-key">Settled Auctions</span>
+          <span class="metric-val cyan">342</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-glow"></div>
+        <div class="card-title">
+          <div class="card-title-icon"></div>
+          Inventory Health
+        </div>
+        <div class="metric-row">
+          <span class="metric-key">Active Slots</span>
+          <span class="metric-val cyan">24</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-key">Auctions Running</span>
+          <span class="metric-val">18</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-key">Avg Bids Per Slot</span>
+          <span class="metric-val">35.3</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-key">On-Chain Reputation</span>
+          <span class="metric-val green">94 / 100</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-key">0G Storage Files</span>
+          <span class="metric-val cyan">24 slots stored</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-key">Avg Rating</span>
+          <span class="metric-val green">4.8 / 5.0 ⭐</span>
+        </div>
+      </div>
     </div>
-    <div class="stat-box">
-      <div class="stat-label">Fill Rate</div>
-      <div class="stat-value" style="color:var(--green-ok)">94%</div>
-      <div class="stat-sub">industry avg: 68%</div>
-      <div class="stat-icon"></div>
+
+    <div class="list-panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">List New Ad Inventory</div>
+          <div class="panel-subtitle">Metadata stored on 0G Storage · Slot listed on 0G Chain · Bidders can find
+            instantly</div>
+        </div>
+        <div class="verified-badge">Stores to 0G Storage</div>
+      </div>
+
+      <div class="section-label">Slot Details</div>
+      <div class="form-grid" style="margin-bottom:18px">
+        <div class="field">
+          <label>Slot Name *</label>
+          <input type="text" value="Homepage Hero Banner">
+        </div>
+        <div class="field">
+          <label>Page URL *</label>
+          <input type="text" placeholder="https://yoursite.com/page">
+        </div>
+      </div>
+
+      <div class="form-grid three" style="margin-bottom:18px">
+        <div class="field">
+          <label>Dimensions</label>
+          <select>
+            <option selected>728 × 90 (Leaderboard)</option>
+            <option>300 × 250 (Rectangle)</option>
+            <option>1200 × 100 (Full Width)</option>
+            <option>600 × 200 (Newsletter)</option>
+            <option>Custom</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Placement</label>
+          <select>
+            <option selected>Above the Fold</option>
+            <option>Mid-Page</option>
+            <option>Sidebar</option>
+            <option>Footer</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Category</label>
+          <select>
+            <option>Technology</option>
+            <option>Finance</option>
+            <option>All Categories</option>
+            <option>Crypto / Web3</option>
+            <option>Lifestyle</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="section-label">Pricing</div>
+      <div class="form-grid three" style="margin-bottom:18px">
+        <div class="field">
+          <label>Base Price (OG) *</label>
+          <input type="number" value="0.001" step="0.001">
+        </div>
+        <div class="field">
+          <label>Reserve Price (OG)</label>
+          <input type="number" value="0.005" step="0.001">
+        </div>
+        <div class="field">
+          <label>Auction Duration</label>
+          <select>
+            <option>1 hour</option>
+            <option selected>6 hours</option>
+            <option>24 hours</option>
+            <option>7 days</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="section-label">0G Storage — Metadata Preview</div>
+      <div class="storage-preview">
+        <div class="storage-preview-title">Metadata will be uploaded to 0G Storage and hash stored on-chain</div>
+        <div class="storage-hash">
+          {<br>
+          &nbsp;&nbsp;"inventoryId": "inv-homepage-banner-001",<br>
+          &nbsp;&nbsp;"title": "Homepage Hero Banner",<br>
+          &nbsp;&nbsp;"placement": "above-the-fold",<br>
+          &nbsp;&nbsp;"dimensions": "728x90",<br>
+          &nbsp;&nbsp;"category": "tech",<br>
+          &nbsp;&nbsp;"basePrice": "0.001 OG",<br>
+          &nbsp;&nbsp;"publisherId": "0xf7c1…d823"<br>
+          }
+        </div>
+      </div>
+
+      <div class="section-label">Auction Settings</div>
+      <div class="toggle-list">
+        <div class="toggle-row">
+          <span class="toggle-label">Accept bids from unverified agents</span>
+          <div class="toggle" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">Auto-close auction when reserve price is met</span>
+          <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">Auto-accept highest bid at auction close</span>
+          <div class="toggle" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <div class="toggle-row">
+          <span class="toggle-label">Require escrow lock before bid is counted</span>
+          <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-ghost">Save as Draft</button>
+        <button class="btn btn-primary">Preview Slot</button>
+        <button class="btn btn-primary" onclick="handleRegisterPublisher()">Register on 0G</button>
+        <button class="btn btn-launch" onclick="runPublisherAgent()">List on 0G Chain</button>
+      </div>
     </div>
-  </div>
- 
-  <div class="main-grid">
- 
-    <div class="card">
-      <div class="card-glow"></div>
-      <div class="card-title">
+
+    <div class="settlement-log">
+      <div class="card-title" style="margin-bottom:20px">
         <div class="card-title-icon"></div>
-        Live Auctions
+        On-Chain Settlement Log
       </div>
- 
-      <div class="auction-item hot">
-        <div class="auction-top">
-          <div>
-            <div class="auction-slot-name">Homepage Hero (728×90)</div>
-            <div class="auction-slot-meta">Tech & Finance · Above the fold · 0G Storage: 0xabc1…</div>
-          </div>
-          <span class="auction-badge badge-live">● LIVE</span>
+
+      <div class="log-item">
+        <div class="log-icon"></div>
+        <div class="log-body">
+          <div class="log-title">Homepage Hero — CryptoApp Inc</div>
+          <div class="log-meta">escrow released · 2h ago · tx: 0x9f3a…b821</div>
         </div>
-        <div class="auction-bid-row">
-          <div class="auction-bid-item">
-            <div class="auction-bid-label">Highest Bid</div>
-            <div class="auction-bid-val highlight">0.085 OG</div>
-          </div>
-          <div class="auction-bid-item">
-            <div class="auction-bid-label">Total Bids</div>
-            <div class="auction-bid-val">42</div>
-          </div>
-          <div class="auction-bid-item">
-            <div class="auction-bid-label">Base Price</div>
-            <div class="auction-bid-val">0.001 OG</div>
-          </div>
+        <div class="log-amount">+0.085 OG</div>
+        <div class="log-chain-link">View on 0G →</div>
+      </div>
+
+      <div class="log-item">
+        <div class="log-icon"></div>
+        <div class="log-body">
+          <div class="log-title">Newsletter Sponsorship — TechStartups</div>
+          <div class="log-meta">escrow released · 6h ago · tx: 0x2c7d…4f19</div>
         </div>
-        <div class="progress-bar"><div class="progress-fill urgent" style="width:92%"></div></div>
-        <div class="auction-footer">
-          <span>⏱ Ends in 8 min</span>
-          <button class="btn-accept">✓ Accept Highest Bid</button>
+        <div class="log-amount">+0.125 OG</div>
+        <div class="log-chain-link">View on 0G →</div>
+      </div>
+
+      <div class="log-item">
+        <div class="log-icon"></div>
+        <div class="log-body">
+          <div class="log-title">Sidebar Ad — WebAdvertising Inc</div>
+          <div class="log-meta">escrow locked · awaiting delivery · tx: 0xaa5b…9c03</div>
         </div>
+        <div class="log-amount" style="color:var(--amber)">0.042 OG</div>
+        <div class="log-chain-link">View on 0G →</div>
       </div>
- 
-      <div class="auction-item">
-        <div class="auction-top">
-          <div>
-            <div class="auction-slot-name">Sidebar Recommended (300×250)</div>
-            <div class="auction-slot-meta">All Categories · Mid-page · 0G Storage: 0xdef4…</div>
-          </div>
-          <span class="auction-badge badge-live">● LIVE</span>
+
+      <div class="log-item">
+        <div class="log-icon"></div>
+        <div class="log-body">
+          <div class="log-title">Above-Fold Banner — CoinDesk Agency</div>
+          <div class="log-meta">escrow released · 12h ago · tx: 0x77fe…1d44</div>
         </div>
-        <div class="auction-bid-row">
-          <div class="auction-bid-item">
-            <div class="auction-bid-label">Highest Bid</div>
-            <div class="auction-bid-val highlight">0.042 OG</div>
-          </div>
-          <div class="auction-bid-item">
-            <div class="auction-bid-label">Total Bids</div>
-            <div class="auction-bid-val">28</div>
-          </div>
-          <div class="auction-bid-item">
-            <div class="auction-bid-label">Base Price</div>
-            <div class="auction-bid-val">0.001 OG</div>
-          </div>
-        </div>
-        <div class="progress-bar"><div class="progress-fill" style="width:45%"></div></div>
-        <div class="auction-footer">
-          <span>⏱ Ends in 4h 12m</span>
-          <button class="btn-accept">✓ Accept Highest Bid</button>
-        </div>
+        <div class="log-amount">+0.067 OG</div>
+        <div class="log-chain-link">View on 0G →</div>
       </div>
- 
-      <div class="auction-item">
-        <div class="auction-top">
-          <div>
-            <div class="auction-slot-name">Newsletter Sponsorship (600×200)</div>
-            <div class="auction-slot-meta">Tech & Crypto · Email · 0G Storage: 0x881c…</div>
-          </div>
-          <span class="auction-badge badge-pending">PENDING</span>
-        </div>
-        <div class="auction-bid-row">
-          <div class="auction-bid-item">
-            <div class="auction-bid-label">Highest Bid</div>
-            <div class="auction-bid-val highlight">0.125 OG</div>
-          </div>
-          <div class="auction-bid-item">
-            <div class="auction-bid-label">Total Bids</div>
-            <div class="auction-bid-val">56</div>
-          </div>
-          <div class="auction-bid-item">
-            <div class="auction-bid-label">Base Price</div>
-            <div class="auction-bid-val">0.001 OG</div>
-          </div>
-        </div>
-        <div class="progress-bar"><div class="progress-fill" style="width:70%"></div></div>
-        <div class="auction-footer">
-          <span>⏱ Ends in 2h 30m</span>
-          <button class="btn-accept">✓ Accept Highest Bid</button>
-        </div>
-      </div>
-    </div>
- 
-    <div class="card">
-      <div class="card-glow"></div>
-      <div class="card-title">
-        <div class="card-title-icon"></div>
-        Revenue & Payouts
-      </div>
-      <div class="metric-row">
-        <span class="metric-key">Revenue This Month</span>
-        <span class="metric-val green">121 OG</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-key">Avg Bid Per Slot</span>
-        <span class="metric-val">0.143 OG</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-key">Fill Rate</span>
-        <span class="metric-val green">94%</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-key">Pending in Escrow</span>
-        <span class="metric-val amber">2.4 OG</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-key">Available Withdrawal</span>
-        <span class="metric-val green">8.7 OG</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-key">Settled Auctions</span>
-        <span class="metric-val cyan">342</span>
-      </div>
-    </div>
- 
-    <div class="card">
-      <div class="card-glow"></div>
-      <div class="card-title">
-        <div class="card-title-icon"></div>
-        Inventory Health
-      </div>
-      <div class="metric-row">
-        <span class="metric-key">Active Slots</span>
-        <span class="metric-val cyan">24</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-key">Auctions Running</span>
-        <span class="metric-val">18</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-key">Avg Bids Per Slot</span>
-        <span class="metric-val">35.3</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-key">On-Chain Reputation</span>
-        <span class="metric-val green">94 / 100</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-key">0G Storage Files</span>
-        <span class="metric-val cyan">24 slots stored</span>
-      </div>
-      <div class="metric-row">
-        <span class="metric-key">Avg Rating</span>
-        <span class="metric-val green">4.8 / 5.0 ⭐</span>
-      </div>
-    </div>
-  </div>
- 
-  <div class="list-panel">
-    <div class="panel-header">
-      <div>
-        <div class="panel-title">List New Ad Inventory</div>
-        <div class="panel-subtitle">Metadata stored on 0G Storage · Slot listed on 0G Chain · Bidders can find instantly</div>
-      </div>
-      <div class="verified-badge">Stores to 0G Storage</div>
-    </div>
- 
-    <div class="section-label">Slot Details</div>
-    <div class="form-grid" style="margin-bottom:18px">
-      <div class="field">
-        <label>Slot Name *</label>
-        <input type="text" value="Homepage Hero Banner">
-      </div>
-      <div class="field">
-        <label>Page URL *</label>
-        <input type="text" placeholder="https://yoursite.com/page">
-      </div>
-    </div>
- 
-    <div class="form-grid three" style="margin-bottom:18px">
-      <div class="field">
-        <label>Dimensions</label>
-        <select>
-          <option selected>728 × 90 (Leaderboard)</option>
-          <option>300 × 250 (Rectangle)</option>
-          <option>1200 × 100 (Full Width)</option>
-          <option>600 × 200 (Newsletter)</option>
-          <option>Custom</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Placement</label>
-        <select>
-          <option selected>Above the Fold</option>
-          <option>Mid-Page</option>
-          <option>Sidebar</option>
-          <option>Footer</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Category</label>
-        <select>
-          <option>Technology</option>
-          <option>Finance</option>
-          <option>All Categories</option>
-          <option>Crypto / Web3</option>
-          <option>Lifestyle</option>
-        </select>
-      </div>
-    </div>
- 
-    <div class="section-label">Pricing</div>
-    <div class="form-grid three" style="margin-bottom:18px">
-      <div class="field">
-        <label>Base Price (OG) *</label>
-        <input type="number" value="0.001" step="0.001">
-      </div>
-      <div class="field">
-        <label>Reserve Price (OG)</label>
-        <input type="number" value="0.005" step="0.001">
-      </div>
-      <div class="field">
-        <label>Auction Duration</label>
-        <select>
-          <option>1 hour</option>
-          <option selected>6 hours</option>
-          <option>24 hours</option>
-          <option>7 days</option>
-        </select>
-      </div>
-    </div>
- 
-    <div class="section-label">0G Storage — Metadata Preview</div>
-    <div class="storage-preview">
-      <div class="storage-preview-title">Metadata will be uploaded to 0G Storage and hash stored on-chain</div>
-      <div class="storage-hash">
-        {<br>
-        &nbsp;&nbsp;"inventoryId": "inv-homepage-banner-001",<br>
-        &nbsp;&nbsp;"title": "Homepage Hero Banner",<br>
-        &nbsp;&nbsp;"placement": "above-the-fold",<br>
-        &nbsp;&nbsp;"dimensions": "728x90",<br>
-        &nbsp;&nbsp;"category": "tech",<br>
-        &nbsp;&nbsp;"basePrice": "0.001 OG",<br>
-        &nbsp;&nbsp;"publisherId": "0xf7c1…d823"<br>
-        }
-      </div>
-    </div>
- 
-    <div class="section-label">Auction Settings</div>
-    <div class="toggle-list">
-      <div class="toggle-row">
-        <span class="toggle-label">Accept bids from unverified agents</span>
-        <div class="toggle" onclick="this.classList.toggle('on')"></div>
-      </div>
-      <div class="toggle-row">
-        <span class="toggle-label">Auto-close auction when reserve price is met</span>
-        <div class="toggle on" onclick="this.classList.toggle('on')"></div>
-      </div>
-      <div class="toggle-row">
-        <span class="toggle-label">Auto-accept highest bid at auction close</span>
-        <div class="toggle" onclick="this.classList.toggle('on')"></div>
-      </div>
-      <div class="toggle-row">
-        <span class="toggle-label">Require escrow lock before bid is counted</span>
-        <div class="toggle on" onclick="this.classList.toggle('on')"></div>
-      </div>
-    </div>
- 
-    <div class="btn-row">
-      <button class="btn btn-ghost">Save as Draft</button>
-      <button class="btn btn-primary">Preview Slot</button>
-      <button class="btn btn-primary" onclick="handleRegisterPublisher()">Register on 0G</button>
-      <button class="btn btn-launch" onclick="handleListInventory()">List on 0G Chain</button>
-    </div>
-  </div>
- 
-  <div class="settlement-log">
-    <div class="card-title" style="margin-bottom:20px">
-      <div class="card-title-icon"></div>
-      On-Chain Settlement Log
-    </div>
- 
-    <div class="log-item">
-      <div class="log-icon"></div>
-      <div class="log-body">
-        <div class="log-title">Homepage Hero — CryptoApp Inc</div>
-        <div class="log-meta">escrow released · 2h ago · tx: 0x9f3a…b821</div>
-      </div>
-      <div class="log-amount">+0.085 OG</div>
-      <div class="log-chain-link">View on 0G →</div>
-    </div>
- 
-    <div class="log-item">
-      <div class="log-icon"></div>
-      <div class="log-body">
-        <div class="log-title">Newsletter Sponsorship — TechStartups</div>
-        <div class="log-meta">escrow released · 6h ago · tx: 0x2c7d…4f19</div>
-      </div>
-      <div class="log-amount">+0.125 OG</div>
-      <div class="log-chain-link">View on 0G →</div>
-    </div>
- 
-    <div class="log-item">
-      <div class="log-icon"></div>
-      <div class="log-body">
-        <div class="log-title">Sidebar Ad — WebAdvertising Inc</div>
-        <div class="log-meta">escrow locked · awaiting delivery · tx: 0xaa5b…9c03</div>
-      </div>
-      <div class="log-amount" style="color:var(--amber)">0.042 OG</div>
-      <div class="log-chain-link">View on 0G →</div>
-    </div>
- 
-    <div class="log-item">
-      <div class="log-icon"></div>
-      <div class="log-body">
-        <div class="log-title">Above-Fold Banner — CoinDesk Agency</div>
-        <div class="log-meta">escrow released · 12h ago · tx: 0x77fe…1d44</div>
-      </div>
-      <div class="log-amount">+0.067 OG</div>
-      <div class="log-chain-link">View on 0G →</div>
-    </div>
- 
-  </div>
 
-<div id="toast">
-  <button id="toast-close" onclick="document.getElementById('toast').classList.remove('show')">x</button>
-  <div id="toast-title">Transaction Sent</div>
-  <div id="toast-hash"></div>
-  <a id="toast-link" href="#" target="_blank">View on 0G Explorer</a>
-</div>
+    </div>
 
-<script>
-// ── ETHERS GUARD ───────────────────────────────────────────────
-if (typeof ethers === "undefined") {
-  console.error("ethers.js failed to load from CDN. Check your network/ad-blocker.");
-  document.addEventListener("DOMContentLoaded", () => {
-    const btn = document.getElementById("connect-wallet-btn");
-    if (btn) { btn.textContent = "⚠ Load Error"; btn.disabled = true; btn.title = "ethers.js CDN failed to load — check console."; }
-  });
-} else {
+    <div id="toast">
+      <button id="toast-close" onclick="document.getElementById('toast').classList.remove('show')">x</button>
+      <div id="toast-title">Transaction Sent</div>
+      <div id="toast-hash"></div>
+      <a id="toast-link" href="#" target="_blank">View on 0G Explorer</a>
+    </div>
 
-const REGISTRY_ADDRESS   = "0x4B785db8De522cc3d7Fb4F191B9368Cc1197B742";
-const AUCTION_ADDRESS    = "0x108274F7151BA879A03D5b1Fe525745Cf71695fF";
-const SETTLEMENT_ADDRESS = "0x555b3d16810Bfbd0Da5dFBFF4E07B576f4EDd3d1";
-
-const REGISTRY_ABI = [
-  {"inputs":[],"stateMutability":"nonpayable","type":"constructor"},
-  {"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"OwnableInvalidOwner","type":"error"},
-  {"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"OwnableUnauthorizedAccount","type":"error"},
-  {"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"agentId","type":"bytes32"},{"indexed":true,"internalType":"address","name":"ownerAddress","type":"address"},{"indexed":false,"internalType":"string","name":"metadataCid","type":"string"},{"indexed":false,"internalType":"uint256","name":"timestamp","type":"uint256"}],"name":"AgentRegistered","type":"event"},
-  {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},
-  {"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"addressToAgentId","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},
-  {"inputs":[],"name":"agentCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
-  {"inputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"name":"agents","outputs":[{"internalType":"address","name":"ownerAddress","type":"address"},{"internalType":"string","name":"metadataCid","type":"string"},{"internalType":"uint256","name":"reputation","type":"uint256"},{"internalType":"bool","name":"verified","type":"bool"},{"internalType":"uint256","name":"createdAt","type":"uint256"},{"internalType":"bool","name":"exists","type":"bool"}],"stateMutability":"view","type":"function"},
-  {"inputs":[{"internalType":"bytes32","name":"agentId","type":"bytes32"}],"name":"getAgent","outputs":[{"components":[{"internalType":"address","name":"ownerAddress","type":"address"},{"internalType":"string","name":"metadataCid","type":"string"},{"internalType":"uint256","name":"reputation","type":"uint256"},{"internalType":"bool","name":"verified","type":"bool"},{"internalType":"uint256","name":"createdAt","type":"uint256"},{"internalType":"bool","name":"exists","type":"bool"}],"internalType":"struct VexaAgentRegistry.Agent","name":"","type":"tuple"}],"stateMutability":"view","type":"function"},
-  {"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},
-  {"inputs":[{"internalType":"string","name":"metadataCid","type":"string"}],"name":"registerAgent","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"nonpayable","type":"function"},
-  {"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},
-  {"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}
-];
-
-const AUCTION_ABI = [
-  {"inputs":[],"stateMutability":"nonpayable","type":"constructor"},
-  {"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"OwnableInvalidOwner","type":"error"},
-  {"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"OwnableUnauthorizedAccount","type":"error"},
-  {"inputs":[],"name":"ReentrancyGuardReentrantCall","type":"error"},
-  {"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"inventoryId","type":"bytes32"},{"indexed":true,"internalType":"bytes32","name":"agentId","type":"bytes32"},{"indexed":false,"internalType":"uint256","name":"bidAmount","type":"uint256"}],"name":"BidSubmitted","type":"event"},
-  {"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"inventoryId","type":"bytes32"},{"indexed":true,"internalType":"bytes32","name":"publisherId","type":"bytes32"},{"indexed":false,"internalType":"uint256","name":"basePrice","type":"uint256"},{"indexed":false,"internalType":"string","name":"storageHash","type":"string"}],"name":"InventoryListed","type":"event"},
-  {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},
-  {"inputs":[{"internalType":"bytes32","name":"inventoryId","type":"bytes32"}],"name":"getBidCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
-  {"inputs":[{"internalType":"bytes32","name":"inventoryId","type":"bytes32"}],"name":"getStorageHash","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},
-  {"inputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"name":"inventories","outputs":[{"internalType":"bytes32","name":"publisherId","type":"bytes32"},{"internalType":"address","name":"publisherAddr","type":"address"},{"internalType":"string","name":"storageHash","type":"string"},{"internalType":"uint256","name":"basePrice","type":"uint256"},{"internalType":"bool","name":"auctionOpen","type":"bool"},{"internalType":"bool","name":"settled","type":"bool"}],"stateMutability":"view","type":"function"},
-  {"inputs":[{"internalType":"bytes32","name":"","type":"bytes32"},{"internalType":"uint256","name":"","type":"uint256"}],"name":"inventoryBids","outputs":[{"internalType":"bytes32","name":"agentId","type":"bytes32"},{"internalType":"address","name":"bidderAddress","type":"address"},{"internalType":"uint256","name":"bidAmount","type":"uint256"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"bool","name":"active","type":"bool"}],"stateMutability":"view","type":"function"},
-  {"inputs":[{"internalType":"bytes32","name":"inventoryId","type":"bytes32"},{"internalType":"bytes32","name":"publisherId","type":"bytes32"},{"internalType":"string","name":"storageHash","type":"string"},{"internalType":"uint256","name":"basePrice","type":"uint256"}],"name":"listInventory","outputs":[],"stateMutability":"nonpayable","type":"function"},
-  {"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},
-  {"inputs":[],"name":"registryAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},
-  {"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},
-  {"inputs":[{"internalType":"address","name":"_registryAddress","type":"address"}],"name":"setRegistryAddress","outputs":[],"stateMutability":"nonpayable","type":"function"},
-  {"inputs":[{"internalType":"bytes32","name":"agentId","type":"bytes32"},{"internalType":"bytes32","name":"inventoryId","type":"bytes32"},{"internalType":"uint256","name":"bidAmount","type":"uint256"}],"name":"submitBid","outputs":[],"stateMutability":"nonpayable","type":"function"},
-  {"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}
-];
-
-const SETTLEMENT_ABI = [
-  {"inputs":[],"stateMutability":"nonpayable","type":"constructor"},
-  {"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"OwnableInvalidOwner","type":"error"},
-  {"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"OwnableUnauthorizedAccount","type":"error"},
-  {"inputs":[],"name":"ReentrancyGuardReentrantCall","type":"error"},
-  {"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"escrowId","type":"bytes32"},{"indexed":false,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"EscrowCancelled","type":"event"},
-  {"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"escrowId","type":"bytes32"},{"indexed":true,"internalType":"bytes32","name":"agentId","type":"bytes32"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"EscrowLocked","type":"event"},
-  {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},
-  {"anonymous":false,"inputs":[{"indexed":true,"internalType":"bytes32","name":"escrowId","type":"bytes32"},{"indexed":false,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"PaymentReleased","type":"event"},
-  {"inputs":[{"internalType":"bytes32","name":"escrowId","type":"bytes32"}],"name":"cancelEscrow","outputs":[],"stateMutability":"nonpayable","type":"function"},
-  {"inputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"name":"escrows","outputs":[{"internalType":"bytes32","name":"agentId","type":"bytes32"},{"internalType":"address payable","name":"agentAddr","type":"address"},{"internalType":"address payable","name":"publisherAddr","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"enum VexaSettlement.Status","name":"status","type":"uint8"},{"internalType":"uint256","name":"createdAt","type":"uint256"}],"stateMutability":"view","type":"function"},
-  {"inputs":[],"name":"getContractBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
-  {"inputs":[],"name":"lastEscrowId","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},
-  {"inputs":[{"internalType":"bytes32","name":"agentId","type":"bytes32"},{"internalType":"address payable","name":"publisherAddr","type":"address"},{"internalType":"bytes32","name":"inventoryId","type":"bytes32"}],"name":"lockEscrow","outputs":[],"stateMutability":"payable","type":"function"},
-  {"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},
-  {"inputs":[{"internalType":"bytes32","name":"escrowId","type":"bytes32"}],"name":"releasePayment","outputs":[],"stateMutability":"nonpayable","type":"function"},
-  {"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},
-  {"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}
-];
-
-let provider, signer, registry, auction, settlement;
-const CHAIN_ID = 16661n;
-const EXPLORER = "https://chainscan.0g.ai";
-
-function showToast(label, txHash) {
-  const url = EXPLORER + "/tx/" + txHash;
-  document.getElementById("toast-title").textContent = label + " -- TX Confirmed";
-  document.getElementById("toast-hash").textContent  = txHash.slice(0,20) + "..." + txHash.slice(-8);
-  document.getElementById("toast-link").href = url;
-  document.getElementById("toast").classList.add("show");
-  console.log(label, "TX:", txHash);
-  setTimeout(function(){ document.getElementById("toast").classList.remove("show"); }, 15000);
-}
-
-// ── CONNECTED UI LOGIC ──────────────────────────────────────────
-function updateWalletUI(isConnected, address, balance) {
-  const connectBtn = document.getElementById('connect-wallet-btn');
-  const profileUI = document.getElementById('connected-profile-ui');
-  
-  if (isConnected) {
-    if (connectBtn) connectBtn.style.display = 'none';
-    if (profileUI) profileUI.style.display = 'block';
-    
-    document.getElementById('header-address').innerText = address.slice(0,6) + '...' + address.slice(-4);
-    document.getElementById('full-address').innerText = address;
-    document.getElementById('ui-balance').innerText = balance;
-  } else {
-    if (connectBtn) connectBtn.style.display = 'block';
-    if (profileUI) profileUI.style.display = 'none';
-    const dropdown = document.getElementById('profile-dropdown');
-    if (dropdown) dropdown.style.display = 'none';
-  }
-}
-
-function toggleDropdown() {
-  const dropdown = document.getElementById('profile-dropdown');
-  if (dropdown) {
-    dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
-  }
-}
-
-function disconnectWalletUI() {
-  disconnectWallet();
-}
-
-async function connectWallet() {
-  if (!window.ethereum) {
-    if (location.protocol === "file:") {
-      alert(" File:// protocol detected!\n\nMetaMask does NOT inject into pages opened from the filesystem.\n\nFix:\n  python3 -m http.server 8080\nthen open http://localhost:8080");
-    } else {
-      alert("MetaMask not found. Install from metamask.io then reload.");
-    }
-    return;
-  }
-  try {
-    await window.ethereum.request({ method: "eth_requestAccounts" });
-
-    const rawChain = await window.ethereum.request({ method: "eth_chainId" });
-    if (BigInt(rawChain) !== CHAIN_ID) {
-      try {
-        await window.ethereum.request({
-          method: "wallet_addEthereumChain",
-          params: [{
-            chainId: "0x4115",
-            chainName: "0G Mainnet",
-            nativeCurrency: { name: "0G", symbol: "0G", decimals: 18 },
-            rpcUrls: ["https://evmrpc.0g.ai"],
-            blockExplorerUrls: ["https://chainscan.0g.ai"]
-          }]
+    <script>
+      // ── ETHERS GUARD ───────────────────────────────────────────────
+      if (typeof ethers === "undefined") {
+        console.error("ethers.js failed to load from CDN. Check your network/ad-blocker.");
+        document.addEventListener("DOMContentLoaded", () => {
+          const btn = document.getElementById("connect-wallet-btn");
+          if (btn) { btn.textContent = "⚠ Load Error"; btn.disabled = true; btn.title = "ethers.js CDN failed to load — check console."; }
         });
-      } catch(switchErr) {
-        alert("Please switch MetaMask to 0G Mainnet (Chain ID 16661) and try again.");
-        return;
-      }
-      const afterChain = await window.ethereum.request({ method: "eth_chainId" });
-      if (BigInt(afterChain) !== CHAIN_ID) {
-        alert("Still on wrong network. Switch MetaMask to 0G Mainnet (Chain 16661) manually then retry.");
-        return;
-      }
-    }
+      } else {
 
-    provider = new ethers.BrowserProvider(window.ethereum);
-    signer   = await provider.getSigner();
+        const REGISTRY_ADDRESS = "0x4B785db8De522cc3d7Fb4F191B9368Cc1197B742";
+        const AUCTION_ADDRESS = "0x108274F7151BA879A03D5b1Fe525745Cf71695fF";
+        const SETTLEMENT_ADDRESS = "0x555b3d16810Bfbd0Da5dFBFF4E07B576f4EDd3d1";
 
-    registry   = new ethers.Contract(REGISTRY_ADDRESS,   REGISTRY_ABI,   signer);
-    auction    = new ethers.Contract(AUCTION_ADDRESS,    AUCTION_ABI,    signer);
-    settlement = new ethers.Contract(SETTLEMENT_ADDRESS, SETTLEMENT_ABI, signer);
+        const REGISTRY_ABI = [
+          { "inputs": [], "stateMutability": "nonpayable", "type": "constructor" },
+          { "inputs": [{ "internalType": "address", "name": "owner", "type": "address" }], "name": "OwnableInvalidOwner", "type": "error" },
+          { "inputs": [{ "internalType": "address", "name": "account", "type": "address" }], "name": "OwnableUnauthorizedAccount", "type": "error" },
+          { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "bytes32", "name": "agentId", "type": "bytes32" }, { "indexed": true, "internalType": "address", "name": "ownerAddress", "type": "address" }, { "indexed": false, "internalType": "string", "name": "metadataCid", "type": "string" }, { "indexed": false, "internalType": "uint256", "name": "timestamp", "type": "uint256" }], "name": "AgentRegistered", "type": "event" },
+          { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "previousOwner", "type": "address" }, { "indexed": true, "internalType": "address", "name": "newOwner", "type": "address" }], "name": "OwnershipTransferred", "type": "event" },
+          { "inputs": [{ "internalType": "address", "name": "", "type": "address" }], "name": "addressToAgentId", "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }], "stateMutability": "view", "type": "function" },
+          { "inputs": [], "name": "agentCount", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
+          { "inputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }], "name": "agents", "outputs": [{ "internalType": "address", "name": "ownerAddress", "type": "address" }, { "internalType": "string", "name": "metadataCid", "type": "string" }, { "internalType": "uint256", "name": "reputation", "type": "uint256" }, { "internalType": "bool", "name": "verified", "type": "bool" }, { "internalType": "uint256", "name": "createdAt", "type": "uint256" }, { "internalType": "bool", "name": "exists", "type": "bool" }], "stateMutability": "view", "type": "function" },
+          { "inputs": [{ "internalType": "bytes32", "name": "agentId", "type": "bytes32" }], "name": "getAgent", "outputs": [{ "components": [{ "internalType": "address", "name": "ownerAddress", "type": "address" }, { "internalType": "string", "name": "metadataCid", "type": "string" }, { "internalType": "uint256", "name": "reputation", "type": "uint256" }, { "internalType": "bool", "name": "verified", "type": "bool" }, { "internalType": "uint256", "name": "createdAt", "type": "uint256" }, { "internalType": "bool", "name": "exists", "type": "bool" }], "internalType": "struct VexaAgentRegistry.Agent", "name": "", "type": "tuple" }], "stateMutability": "view", "type": "function" },
+          { "inputs": [], "name": "owner", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" },
+          { "inputs": [{ "internalType": "string", "name": "metadataCid", "type": "string" }], "name": "registerAgent", "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }], "stateMutability": "nonpayable", "type": "function" },
+          { "inputs": [], "name": "renounceOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+          { "inputs": [{ "internalType": "address", "name": "newOwner", "type": "address" }], "name": "transferOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" }
+        ];
 
-    const addr  = await signer.getAddress();
+        const AUCTION_ABI = [
+          { "inputs": [], "stateMutability": "nonpayable", "type": "constructor" },
+          { "inputs": [{ "internalType": "address", "name": "owner", "type": "address" }], "name": "OwnableInvalidOwner", "type": "error" },
+          { "inputs": [{ "internalType": "address", "name": "account", "type": "address" }], "name": "OwnableUnauthorizedAccount", "type": "error" },
+          { "inputs": [], "name": "ReentrancyGuardReentrantCall", "type": "error" },
+          { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "bytes32", "name": "inventoryId", "type": "bytes32" }, { "indexed": true, "internalType": "bytes32", "name": "agentId", "type": "bytes32" }, { "indexed": false, "internalType": "uint256", "name": "bidAmount", "type": "uint256" }], "name": "BidSubmitted", "type": "event" },
+          { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "bytes32", "name": "inventoryId", "type": "bytes32" }, { "indexed": true, "internalType": "bytes32", "name": "publisherId", "type": "bytes32" }, { "indexed": false, "internalType": "uint256", "name": "basePrice", "type": "uint256" }, { "indexed": false, "internalType": "string", "name": "storageHash", "type": "string" }], "name": "InventoryListed", "type": "event" },
+          { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "previousOwner", "type": "address" }, { "indexed": true, "internalType": "address", "name": "newOwner", "type": "address" }], "name": "OwnershipTransferred", "type": "event" },
+          { "inputs": [{ "internalType": "bytes32", "name": "inventoryId", "type": "bytes32" }], "name": "getBidCount", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
+          { "inputs": [{ "internalType": "bytes32", "name": "inventoryId", "type": "bytes32" }], "name": "getStorageHash", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" },
+          { "inputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }], "name": "inventories", "outputs": [{ "internalType": "bytes32", "name": "publisherId", "type": "bytes32" }, { "internalType": "address", "name": "publisherAddr", "type": "address" }, { "internalType": "string", "name": "storageHash", "type": "string" }, { "internalType": "uint256", "name": "basePrice", "type": "uint256" }, { "internalType": "bool", "name": "auctionOpen", "type": "bool" }, { "internalType": "bool", "name": "settled", "type": "bool" }], "stateMutability": "view", "type": "function" },
+          { "inputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }, { "internalType": "uint256", "name": "", "type": "uint256" }], "name": "inventoryBids", "outputs": [{ "internalType": "bytes32", "name": "agentId", "type": "bytes32" }, { "internalType": "address", "name": "bidderAddress", "type": "address" }, { "internalType": "uint256", "name": "bidAmount", "type": "uint256" }, { "internalType": "uint256", "name": "timestamp", "type": "uint256" }, { "internalType": "bool", "name": "active", "type": "bool" }], "stateMutability": "view", "type": "function" },
+          { "inputs": [{ "internalType": "bytes32", "name": "inventoryId", "type": "bytes32" }, { "internalType": "bytes32", "name": "publisherId", "type": "bytes32" }, { "internalType": "string", "name": "storageHash", "type": "string" }, { "internalType": "uint256", "name": "basePrice", "type": "uint256" }], "name": "listInventory", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+          { "inputs": [], "name": "owner", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" },
+          { "inputs": [], "name": "registryAddress", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" },
+          { "inputs": [], "name": "renounceOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+          { "inputs": [{ "internalType": "address", "name": "_registryAddress", "type": "address" }], "name": "setRegistryAddress", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+          { "inputs": [{ "internalType": "bytes32", "name": "agentId", "type": "bytes32" }, { "internalType": "bytes32", "name": "inventoryId", "type": "bytes32" }, { "internalType": "uint256", "name": "bidAmount", "type": "uint256" }], "name": "submitBid", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+          { "inputs": [{ "internalType": "address", "name": "newOwner", "type": "address" }], "name": "transferOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" }
+        ];
 
-    let balOG = "0.000";
-    try {
-      const balWei = await provider.getBalance(addr);
-      balOG  = parseFloat(ethers.formatEther(balWei)).toFixed(3);
-      var el = function(id){ return document.getElementById(id); };
-      if (el("cb-balance")) el("cb-balance").textContent = balOG + " OG";
-      console.log("\u2705 Publisher connected:", addr, "| Balance:", balOG, "OG");
-    } catch(balErr) {
-      console.warn("Balance fetch failed (RPC may be slow):", balErr.message);
-    }
+        const SETTLEMENT_ABI = [
+          { "inputs": [], "stateMutability": "nonpayable", "type": "constructor" },
+          { "inputs": [{ "internalType": "address", "name": "owner", "type": "address" }], "name": "OwnableInvalidOwner", "type": "error" },
+          { "inputs": [{ "internalType": "address", "name": "account", "type": "address" }], "name": "OwnableUnauthorizedAccount", "type": "error" },
+          { "inputs": [], "name": "ReentrancyGuardReentrantCall", "type": "error" },
+          { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "bytes32", "name": "escrowId", "type": "bytes32" }, { "indexed": false, "internalType": "address", "name": "to", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "EscrowCancelled", "type": "event" },
+          { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "bytes32", "name": "escrowId", "type": "bytes32" }, { "indexed": true, "internalType": "bytes32", "name": "agentId", "type": "bytes32" }, { "indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "EscrowLocked", "type": "event" },
+          { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "previousOwner", "type": "address" }, { "indexed": true, "internalType": "address", "name": "newOwner", "type": "address" }], "name": "OwnershipTransferred", "type": "event" },
+          { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "bytes32", "name": "escrowId", "type": "bytes32" }, { "indexed": false, "internalType": "address", "name": "to", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "PaymentReleased", "type": "event" },
+          { "inputs": [{ "internalType": "bytes32", "name": "escrowId", "type": "bytes32" }], "name": "cancelEscrow", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+          { "inputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }], "name": "escrows", "outputs": [{ "internalType": "bytes32", "name": "agentId", "type": "bytes32" }, { "internalType": "address payable", "name": "agentAddr", "type": "address" }, { "internalType": "address payable", "name": "publisherAddr", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }, { "internalType": "enum VexaSettlement.Status", "name": "status", "type": "uint8" }, { "internalType": "uint256", "name": "createdAt", "type": "uint256" }], "stateMutability": "view", "type": "function" },
+          { "inputs": [], "name": "getContractBalance", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" },
+          { "inputs": [], "name": "lastEscrowId", "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }], "stateMutability": "view", "type": "function" },
+          { "inputs": [{ "internalType": "bytes32", "name": "agentId", "type": "bytes32" }, { "internalType": "address payable", "name": "publisherAddr", "type": "address" }, { "internalType": "bytes32", "name": "inventoryId", "type": "bytes32" }], "name": "lockEscrow", "outputs": [], "stateMutability": "payable", "type": "function" },
+          { "inputs": [], "name": "owner", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" },
+          { "inputs": [{ "internalType": "bytes32", "name": "escrowId", "type": "bytes32" }], "name": "releasePayment", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+          { "inputs": [], "name": "renounceOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+          { "inputs": [{ "internalType": "address", "name": "newOwner", "type": "address" }], "name": "transferOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" }
+        ];
 
-    updateWalletUI(true, addr, balOG + " OG");
+        let provider, signer, registry, auction, settlement;
+        const CHAIN_ID = 16661n;
+        const EXPLORER = "https://chainscan.0g.ai";
 
-    await loadPublisherData(addr);
-  } catch(err) {
-    console.error("connectWallet:", err);
-    alert("Connection failed: " + (err.reason || err.message));
-  }
-}
-
-// ── DISCONNECT WALLET ───────────────────────────────────────────
-function disconnectWallet() {
-  provider   = null;
-  signer     = null;
-  registry   = null;
-  auction    = null;
-  settlement = null;
-
-  var el = function(id){ return document.getElementById(id); };
-  if (el("cb-pubid"))      el("cb-pubid").textContent      = "--";
-  if (el("cb-reputation")) el("cb-reputation").textContent = "--";
-  if (el("cb-escrow"))     el("cb-escrow").textContent     = "--";
-  if (el("cb-balance"))    el("cb-balance").textContent    = "--";
-
-  updateWalletUI(false, '', '');
-
-  console.log("Wallet disconnected from Orvixa.");
-}
-
-async function setPublisherUI(agentId) {
-  var el = function(id){ return document.getElementById(id); };
-  var short = agentId.slice(0,6) + "\u2026" + agentId.slice(-4);
-  if (el("cb-pubid")) el("cb-pubid").textContent = short;
-  try {
-    var agent = await registry.agents(agentId);
-    if (el("cb-reputation")) el("cb-reputation").textContent = agent.reputation.toString() + " / 100";
-  } catch(e) { if (el("cb-reputation")) el("cb-reputation").textContent = "50 / 100"; }
-  try {
-    var bal = await settlement.getContractBalance();
-    if (el("cb-escrow")) el("cb-escrow").textContent = parseFloat(ethers.formatEther(bal)).toFixed(4) + " OG";
-  } catch(e) { if (el("cb-escrow")) el("cb-escrow").textContent = "0 OG"; }
-  console.log("\u2705 Publisher UI updated:", agentId);
-}
-
-async function loadPublisherData(addr, retries, delayMs) {
-  retries  = retries  || 5;
-  delayMs  = delayMs  || 2000;
-  var el   = function(id){ return document.getElementById(id); };
-  for (var i = 0; i < retries; i++) {
-    try {
-      var agentId = await registry.addressToAgentId(addr);
-      if (!agentId || agentId === ethers.ZeroHash) {
-        if (i < retries - 1) {
-          console.log("Publisher not indexed yet, retry " + (i+1) + "/" + retries + " in " + (delayMs/1000) + "s...");
-          await new Promise(function(r){ setTimeout(r, delayMs); });
-          continue;
+        function showToast(label, txHash) {
+          const url = EXPLORER + "/tx/" + txHash;
+          document.getElementById("toast-title").textContent = label + " -- TX Confirmed";
+          document.getElementById("toast-hash").textContent = txHash.slice(0, 20) + "..." + txHash.slice(-8);
+          document.getElementById("toast-link").href = url;
+          document.getElementById("toast").classList.add("show");
+          console.log(label, "TX:", txHash);
+          setTimeout(function () { document.getElementById("toast").classList.remove("show"); }, 15000);
         }
-        if (el("cb-pubid"))      el("cb-pubid").textContent      = "Not registered";
-        if (el("cb-reputation")) el("cb-reputation").textContent = "--";
-        if (el("cb-escrow"))     el("cb-escrow").textContent     = "--";
-        return false;
-      }
-      await setPublisherUI(agentId);
-      return true;
-    } catch(err) {
-      console.warn("loadPublisherData attempt " + (i+1) + " failed:", err.message);
-      if (i < retries - 1) await new Promise(function(r){ setTimeout(r, delayMs); });
-    }
-  }
-  if (el("cb-pubid")) el("cb-pubid").textContent = "RPC error \u2014 reload";
-  return false;
-}
 
-async function handleRegisterPublisher() {
-  if (!signer) { alert("Connect wallet first."); return; }
-  var el = function(id){ return document.getElementById(id); };
-  try {
-    var addr = await signer.getAddress();
-    var existing = await registry.addressToAgentId(addr);
-    if (existing && existing !== ethers.ZeroHash) {
-      await setPublisherUI(existing);
-      alert("Already registered! Publisher ID: " + existing.slice(0,10) + "...");
-      return;
-    }
+        // ── CONNECTED UI LOGIC ──────────────────────────────────────────
+        function updateWalletUI(isConnected, address, balance) {
+          const connectBtn = document.getElementById('connect-wallet-btn');
+          const profileUI = document.getElementById('connected-profile-ui');
 
-    if (el("cb-pubid"))      el("cb-pubid").textContent      = "Registering...";
-    if (el("cb-reputation")) el("cb-reputation").textContent = "pending...";
+          if (isConnected) {
+            if (connectBtn) connectBtn.style.display = 'none';
+            if (profileUI) profileUI.style.display = 'block';
 
-    var cid = "orvixa-publisher-" + Date.now();
-    var agentId = null;
-    try { agentId = await registry.registerAgent.staticCall(cid); } catch(e) {}
-    var tx = await registry.registerAgent(cid);
-    showToast("Registering Publisher", tx.hash);
-    var receipt = await tx.wait();
-
-    if (!agentId || agentId === ethers.ZeroHash) {
-      for (var i = 0; i < receipt.logs.length; i++) {
-        var log = receipt.logs[i];
-        if (log.topics && log.topics.length >= 2) {
-          if (log.address.toLowerCase() === REGISTRY_ADDRESS.toLowerCase()) {
-            agentId = log.topics[1];
-            break;
+            document.getElementById('header-address').innerText = address.slice(0, 6) + '...' + address.slice(-4);
+            document.getElementById('full-address').innerText = address;
+            document.getElementById('ui-balance').innerText = balance;
+          } else {
+            if (connectBtn) connectBtn.style.display = 'block';
+            if (profileUI) profileUI.style.display = 'none';
+            const dropdown = document.getElementById('profile-dropdown');
+            if (dropdown) dropdown.style.display = 'none';
           }
         }
-      }
-    }
-    if (!agentId || agentId === ethers.ZeroHash) {
-      await new Promise(function(r){ setTimeout(r, 3000); });
-      agentId = await registry.addressToAgentId(addr);
-    }
-    if (agentId && agentId !== ethers.ZeroHash) {
-      await setPublisherUI(agentId);
-      alert("\u2705 Publisher registered on 0G Chain!\nID: " + agentId.slice(0,16) + "...");
-    } else {
-      if (el("cb-pubid"))      el("cb-pubid").textContent      = "Registered \u2714";
-      if (el("cb-reputation")) el("cb-reputation").textContent = "50 / 100";
-      alert("\u2705 TX confirmed! Publisher registered.\n\nReload the page to see your Publisher ID.");
-    }
 
-  } catch(err) {
-    if (el("cb-pubid"))      el("cb-pubid").textContent      = "Failed — retry";
-    if (el("cb-reputation")) el("cb-reputation").textContent = "--";
-    if (err.code === 4001 || (err.message && err.message.includes("user rejected"))) {
-      if (el("cb-pubid")) el("cb-pubid").textContent = "Cancelled";
-      return;
-    }
-    alert("Registration failed:\n" + (err.reason || err.message));
-  }
-}
+        function toggleDropdown() {
+          const dropdown = document.getElementById('profile-dropdown');
+          if (dropdown) {
+            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+          }
+        }
 
-async function handleListInventory() {
-  if (!signer) { alert("Connect wallet first."); return; }
-  try {
-    const addr        = await signer.getAddress();
-    const publisherId = await registry.addressToAgentId(addr);
-    if (!publisherId || publisherId === ethers.ZeroHash) {
-      alert("Register as publisher first, then list inventory.");
-      return;
-    }
-    var slotNameEl = document.querySelector('input[type="text"]');
-    var slotName   = (slotNameEl && slotNameEl.value) ? slotNameEl.value : "demo-slot-" + Date.now();
-    const ts           = Date.now();
-    const inventoryId  = ethers.keccak256(ethers.toUtf8Bytes(slotName + "-" + ts));
-    const storageHash  = "orvixa-storage-" + slotName + "-" + ts;
-    const basePriceWei = ethers.parseEther("0.001");
-    const tx = await auction.listInventory(inventoryId, publisherId, storageHash, basePriceWei);
-    showToast("Inventory Listed", tx.hash);
-    await tx.wait();
-    alert("\u2705 Inventory listed on 0G Chain!\nSlot ID: " + inventoryId.slice(0,16) + "...");
-  } catch(err) {
-    alert("List inventory failed:\n" + (err.reason || err.message));
-  }
-}
+        function disconnectWalletUI() {
+          disconnectWallet();
+        }
 
-async function handleReleasePayment(escrowId) {
-  if (!signer) { alert("Connect wallet first."); return; }
-  try {
-    const tx = await settlement.releasePayment(escrowId);
-    showToast("Payment Released", tx.hash);
-    await tx.wait();
-    alert("Payment released to publisher wallet!");
-  } catch(err) {
-    alert("Failed: " + err.message);
-  }
-}
+        async function connectWallet() {
+          if (!window.ethereum) {
+            if (location.protocol === "file:") {
+              alert(" File:// protocol detected!\n\nMetaMask does NOT inject into pages opened from the filesystem.\n\nFix:\n  python3 -m http.server 8080\nthen open http://localhost:8080");
+            } else {
+              alert("MetaMask not found. Install from metamask.io then reload.");
+            }
+            return;
+          }
+          try {
+            await window.ethereum.request({ method: "eth_requestAccounts" });
 
-const AGENT_BID_OG = "0.001";
-let   agentRunning = false;
-let   escrowPollTimer = null;
+            const rawChain = await window.ethereum.request({ method: "eth_chainId" });
+            if (BigInt(rawChain) !== CHAIN_ID) {
+              try {
+                await window.ethereum.request({
+                  method: "wallet_addEthereumChain",
+                  params: [{
+                    chainId: "0x4115",
+                    chainName: "0G Mainnet",
+                    nativeCurrency: { name: "0G", symbol: "0G", decimals: 18 },
+                    rpcUrls: ["https://evmrpc.0g.ai"],
+                    blockExplorerUrls: ["https://chainscan.0g.ai"]
+                  }]
+                });
+              } catch (switchErr) {
+                alert("Please switch MetaMask to 0G Mainnet (Chain ID 16661) and try again.");
+                return;
+              }
+              const afterChain = await window.ethereum.request({ method: "eth_chainId" });
+              if (BigInt(afterChain) !== CHAIN_ID) {
+                alert("Still on wrong network. Switch MetaMask to 0G Mainnet (Chain 16661) manually then retry.");
+                return;
+              }
+            }
 
-function injectAgentLog() {
-  if (document.getElementById("agent-log-panel")) return;
-  const panel = document.createElement("div");
-  panel.id = "agent-log-panel";
-  panel.style.cssText = [
-    "position:fixed","bottom:24px","left:24px","z-index:9998",
-    "width:400px","max-height:320px","overflow-y:auto",
-    "background:#0d0d1a","border:1px solid rgba(34,211,165,0.4)",
-    "border-radius:4px","padding:16px 18px",
-    "box-shadow:0 0 28px rgba(34,211,165,0.15)",
-    "font-family:'JetBrains Mono',monospace","font-size:11px","color:#9490b8"
-  ].join(";");
-  panel.innerHTML = `
+            provider = new ethers.BrowserProvider(window.ethereum);
+            signer = await provider.getSigner();
+
+            registry = new ethers.Contract(REGISTRY_ADDRESS, REGISTRY_ABI, signer);
+            auction = new ethers.Contract(AUCTION_ADDRESS, AUCTION_ABI, signer);
+            settlement = new ethers.Contract(SETTLEMENT_ADDRESS, SETTLEMENT_ABI, signer);
+
+            const addr = await signer.getAddress();
+
+            let balOG = "0.000";
+            try {
+              const balWei = await provider.getBalance(addr);
+              balOG = parseFloat(ethers.formatEther(balWei)).toFixed(3);
+              var el = function (id) { return document.getElementById(id); };
+              if (el("cb-balance")) el("cb-balance").textContent = balOG + " OG";
+              console.log("\u2705 Publisher connected:", addr, "| Balance:", balOG, "OG");
+            } catch (balErr) {
+              console.warn("Balance fetch failed (RPC may be slow):", balErr.message);
+            }
+
+            updateWalletUI(true, addr, balOG + " OG");
+
+            await loadPublisherData(addr);
+          } catch (err) {
+            console.error("connectWallet:", err);
+            alert("Connection failed: " + (err.reason || err.message));
+          }
+        }
+
+        // ── DISCONNECT WALLET ───────────────────────────────────────────
+        function disconnectWallet() {
+          provider = null;
+          signer = null;
+          registry = null;
+          auction = null;
+          settlement = null;
+
+          var el = function (id) { return document.getElementById(id); };
+          if (el("cb-pubid")) el("cb-pubid").textContent = "--";
+          if (el("cb-reputation")) el("cb-reputation").textContent = "--";
+          if (el("cb-escrow")) el("cb-escrow").textContent = "--";
+          if (el("cb-balance")) el("cb-balance").textContent = "--";
+
+          updateWalletUI(false, '', '');
+
+          console.log("Wallet disconnected from Orvixa.");
+        }
+
+        async function setPublisherUI(agentId) {
+          var el = function (id) { return document.getElementById(id); };
+          var short = agentId.slice(0, 6) + "\u2026" + agentId.slice(-4);
+          if (el("cb-pubid")) el("cb-pubid").textContent = short;
+          try {
+            var agent = await registry.agents(agentId);
+            if (el("cb-reputation")) el("cb-reputation").textContent = agent.reputation.toString() + " / 100";
+          } catch (e) { if (el("cb-reputation")) el("cb-reputation").textContent = "50 / 100"; }
+          try {
+            var bal = await settlement.getContractBalance();
+            if (el("cb-escrow")) el("cb-escrow").textContent = parseFloat(ethers.formatEther(bal)).toFixed(4) + " OG";
+          } catch (e) { if (el("cb-escrow")) el("cb-escrow").textContent = "0 OG"; }
+          console.log("\u2705 Publisher UI updated:", agentId);
+        }
+
+        async function loadPublisherData(addr, retries, delayMs) {
+          retries = retries || 5;
+          delayMs = delayMs || 2000;
+          var el = function (id) { return document.getElementById(id); };
+          for (var i = 0; i < retries; i++) {
+            try {
+              var agentId = await registry.addressToAgentId(addr);
+              if (!agentId || agentId === ethers.ZeroHash) {
+                if (i < retries - 1) {
+                  console.log("Publisher not indexed yet, retry " + (i + 1) + "/" + retries + " in " + (delayMs / 1000) + "s...");
+                  await new Promise(function (r) { setTimeout(r, delayMs); });
+                  continue;
+                }
+                if (el("cb-pubid")) el("cb-pubid").textContent = "Not registered";
+                if (el("cb-reputation")) el("cb-reputation").textContent = "--";
+                if (el("cb-escrow")) el("cb-escrow").textContent = "--";
+                return false;
+              }
+              await setPublisherUI(agentId);
+              return true;
+            } catch (err) {
+              console.warn("loadPublisherData attempt " + (i + 1) + " failed:", err.message);
+              if (i < retries - 1) await new Promise(function (r) { setTimeout(r, delayMs); });
+            }
+          }
+          if (el("cb-pubid")) el("cb-pubid").textContent = "RPC error \u2014 reload";
+          return false;
+        }
+
+        async function handleRegisterPublisher() {
+          if (!signer) { alert("Connect wallet first."); return; }
+          var el = function (id) { return document.getElementById(id); };
+          try {
+            var addr = await signer.getAddress();
+            var existing = await registry.addressToAgentId(addr);
+            if (existing && existing !== ethers.ZeroHash) {
+              await setPublisherUI(existing);
+              alert("Already registered! Publisher ID: " + existing.slice(0, 10) + "...");
+              return;
+            }
+
+            if (el("cb-pubid")) el("cb-pubid").textContent = "Registering...";
+            if (el("cb-reputation")) el("cb-reputation").textContent = "pending...";
+
+            var cid = "orvixa-publisher-" + Date.now();
+            var agentId = null;
+            try { agentId = await registry.registerAgent.staticCall(cid); } catch (e) { }
+            var tx = await registry.registerAgent(cid);
+            showToast("Registering Publisher", tx.hash);
+            var receipt = await tx.wait();
+
+            if (!agentId || agentId === ethers.ZeroHash) {
+              for (var i = 0; i < receipt.logs.length; i++) {
+                var log = receipt.logs[i];
+                if (log.topics && log.topics.length >= 2) {
+                  if (log.address.toLowerCase() === REGISTRY_ADDRESS.toLowerCase()) {
+                    agentId = log.topics[1];
+                    break;
+                  }
+                }
+              }
+            }
+            if (!agentId || agentId === ethers.ZeroHash) {
+              await new Promise(function (r) { setTimeout(r, 3000); });
+              agentId = await registry.addressToAgentId(addr);
+            }
+            if (agentId && agentId !== ethers.ZeroHash) {
+              await setPublisherUI(agentId);
+              alert("\u2705 Publisher registered on 0G Chain!\nID: " + agentId.slice(0, 16) + "...");
+            } else {
+              if (el("cb-pubid")) el("cb-pubid").textContent = "Registered \u2714";
+              if (el("cb-reputation")) el("cb-reputation").textContent = "50 / 100";
+              alert("\u2705 TX confirmed! Publisher registered.\n\nReload the page to see your Publisher ID.");
+            }
+
+          } catch (err) {
+            if (el("cb-pubid")) el("cb-pubid").textContent = "Failed — retry";
+            if (el("cb-reputation")) el("cb-reputation").textContent = "--";
+            if (err.code === 4001 || (err.message && err.message.includes("user rejected"))) {
+              if (el("cb-pubid")) el("cb-pubid").textContent = "Cancelled";
+              return;
+            }
+            alert("Registration failed:\n" + (err.reason || err.message));
+          }
+        }
+
+        async function handleListInventory() {
+          if (!signer) { alert("Connect wallet first."); return; }
+          try {
+            const addr = await signer.getAddress();
+            const publisherId = await registry.addressToAgentId(addr);
+            if (!publisherId || publisherId === ethers.ZeroHash) {
+              alert("Register as publisher first, then list inventory.");
+              return;
+            }
+            var slotNameEl = document.querySelector('input[type="text"]');
+            var slotName = (slotNameEl && slotNameEl.value) ? slotNameEl.value : "demo-slot-" + Date.now();
+            const ts = Date.now();
+            const inventoryId = ethers.keccak256(ethers.toUtf8Bytes(slotName + "-" + ts));
+            const storageHash = "orvixa-storage-" + slotName + "-" + ts;
+            const basePriceWei = ethers.parseEther("0.001");
+            const tx = await auction.listInventory(inventoryId, publisherId, storageHash, basePriceWei);
+            showToast("Inventory Listed", tx.hash);
+            await tx.wait();
+            alert("\u2705 Inventory listed on 0G Chain!\nSlot ID: " + inventoryId.slice(0, 16) + "...");
+          } catch (err) {
+            alert("List inventory failed:\n" + (err.reason || err.message));
+          }
+        }
+
+        async function handleReleasePayment(escrowId) {
+          if (!signer) { alert("Connect wallet first."); return; }
+          try {
+            const tx = await settlement.releasePayment(escrowId);
+            showToast("Payment Released", tx.hash);
+            await tx.wait();
+            alert("Payment released to publisher wallet!");
+          } catch (err) {
+            alert("Failed: " + err.message);
+          }
+        }
+
+        const AGENT_BID_OG = "0.001";
+        let agentRunning = false;
+        let escrowPollTimer = null;
+
+        function injectAgentLog() {
+          if (document.getElementById("agent-log-panel")) return;
+          const panel = document.createElement("div");
+          panel.id = "agent-log-panel";
+          panel.style.cssText = [
+            "position:fixed", "bottom:24px", "left:24px", "z-index:9998",
+            "width:400px", "max-height:320px", "overflow-y:auto",
+            "background:#0d0d1a", "border:1px solid rgba(34,211,165,0.4)",
+            "border-radius:4px", "padding:16px 18px",
+            "box-shadow:0 0 28px rgba(34,211,165,0.15)",
+            "font-family:'JetBrains Mono',monospace", "font-size:11px", "color:#9490b8"
+          ].join(";");
+          panel.innerHTML = `
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
       <span style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:800;color:#22d3a5">
         Publisher Agent Log
@@ -1214,211 +1813,204 @@ function injectAgentLog() {
     </div>
     <div id="agent-log-entries"></div>
   `;
-  document.body.appendChild(panel);
-}
-
-function agentLog(msg, type) {
-  const colors = { info:"#9490b8", success:"#22d3a5", warn:"#f59e0b", tx:"#9b59ff" };
-  const icons  = { info:"›", success:"✓", warn:"⚠", tx:"⛓" };
-  const col    = colors[type] || colors.info;
-  const icon   = icons[type]  || icons.info;
-  const entries = document.getElementById("agent-log-entries");
-  if (!entries) return;
-  const row = document.createElement("div");
-  row.style.cssText = "padding:4px 0;border-bottom:1px solid rgba(123,47,255,0.08);color:" + col;
-  const ts = new Date().toLocaleTimeString("en-GB", {hour:"2-digit",minute:"2-digit",second:"2-digit"});
-  row.textContent = ts + "  " + icon + "  " + msg;
-  entries.prepend(row);
-  while (entries.children.length > 40) entries.removeChild(entries.lastChild);
-  console.log("[PUB AGENT]", msg);
-}
-
-function setAgentBadge(text, color) {
-  const b = document.getElementById("agent-status-badge");
-  if (!b) return;
-  b.textContent = text;
-  b.style.color = color;
-  b.style.borderColor = color + "55";
-  b.style.background = color + "18";
-}
-
-async function runPublisherAgent() {
-  if (agentRunning) return;
-  agentRunning = true;
-  injectAgentLog();
-  setAgentBadge("RUNNING", "#22d3a5");
-  agentLog("Publisher agent started", "info");
-
-  try {
-    const addr = await signer.getAddress();
-
-    agentLog("Step 1 — checking registration…", "info");
-    let publisherId = await registry.addressToAgentId(addr);
-
-    if (!publisherId || publisherId === ethers.ZeroHash) {
-      agentLog("Not registered. Sending registerAgent TX…", "info");
-      setAgentBadge("REGISTERING", "#9b59ff");
-      const cid = "orvixa-publisher-" + Date.now();
-      let txId = null;
-      try { txId = await registry.registerAgent.staticCall(cid); } catch(e) {}
-      const tx = await registry.registerAgent(cid);
-      agentLog("TX sent: " + tx.hash.slice(0,18) + "…", "tx");
-      showToast("Registering Publisher", tx.hash);
-      const receipt = await tx.wait();
-      agentLog("Confirmed block " + receipt.blockNumber, "success");
-
-      if (!txId || txId === ethers.ZeroHash) {
-        for (const log of receipt.logs) {
-          if (log.topics && log.topics.length >= 2 &&
-              log.address.toLowerCase() === REGISTRY_ADDRESS.toLowerCase()) {
-            txId = log.topics[1]; break;
-          }
+          document.body.appendChild(panel);
         }
-      }
-      if (!txId || txId === ethers.ZeroHash) {
-        await new Promise(r => setTimeout(r, 3000));
-        txId = await registry.addressToAgentId(addr);
-      }
-      publisherId = txId;
-      await setPublisherUI(publisherId);
-      agentLog("Registered! ID: " + publisherId.slice(0,10) + "…", "success");
-    } else {
-      await setPublisherUI(publisherId);
-      agentLog("Already registered: " + publisherId.slice(0,10) + "…", "success");
-    }
 
-    agentLog("Step 2 — listing ad inventory…", "info");
-    setAgentBadge("LISTING", "#9b59ff");
+        function agentLog(msg, type) {
+          const colors = { info: "#9490b8", success: "#22d3a5", warn: "#f59e0b", tx: "#9b59ff" };
+          const icons = { info: "›", success: "✓", warn: "⚠", tx: "⛓" };
+          const col = colors[type] || colors.info;
+          const icon = icons[type] || icons.info;
+          const entries = document.getElementById("agent-log-entries");
+          if (!entries) return;
+          const row = document.createElement("div");
+          row.style.cssText = "padding:4px 0;border-bottom:1px solid rgba(123,47,255,0.08);color:" + col;
+          const ts = new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+          row.textContent = ts + "  " + icon + "  " + msg;
+          entries.prepend(row);
+          while (entries.children.length > 40) entries.removeChild(entries.lastChild);
+          console.log("[PUB AGENT]", msg);
+        }
 
-    const slotName    = "orvixa-demo-slot-" + Date.now();
-    const ts          = Date.now();
-    const inventoryId = ethers.keccak256(ethers.toUtf8Bytes(slotName + "-" + ts));
-    const storageHash = "orvixa-storage-" + slotName + "-" + ts;
-    const basePriceWei = ethers.parseEther(AGENT_BID_OG);
+        function setAgentBadge(text, color) {
+          const b = document.getElementById("agent-status-badge");
+          if (!b) return;
+          b.textContent = text;
+          b.style.color = color;
+          b.style.borderColor = color + "55";
+          b.style.background = color + "18";
+        }
 
-    const listTx = await auction.listInventory(inventoryId, publisherId, storageHash, basePriceWei);
-    agentLog("TX sent: " + listTx.hash.slice(0,18) + "…", "tx");
-    showToast("Inventory Listed", listTx.hash);
-    const listReceipt = await listTx.wait();
-    agentLog("Inventory confirmed block " + listReceipt.blockNumber, "success");
-    agentLog("Inventory ID: " + inventoryId.slice(0,18) + "…", "success");
+        async function runPublisherAgent() {
+          if (agentRunning) return;
+          agentRunning = true;
+          injectAgentLog();
+          setAgentBadge("RUNNING", "#22d3a5");
+          agentLog("Publisher agent started", "info");
 
-    localStorage.setItem("orvixa_inventoryId",   inventoryId);
-    localStorage.setItem("orvixa_publisherAddr", addr);
-    localStorage.setItem("orvixa_publisherId",   publisherId);
-    localStorage.setItem("orvixa_listedAt",      Date.now().toString());
-    agentLog("Wrote inventoryId to localStorage for Advertiser", "info");
-
-    agentLog("Step 3 — polling for escrow lock (every 8s)…", "info");
-    setAgentBadge("WAITING ESCROW", "#f59e0b");
-    await pollForEscrowAndRelease(inventoryId, addr);
-
-  } catch(err) {
-    if (err.code === 4001 || (err.message && err.message.includes("user rejected"))) {
-      agentLog("User rejected TX — agent paused", "warn");
-      setAgentBadge("PAUSED", "#f59e0b");
-    } else {
-      agentLog("ERROR: " + (err.reason || err.message || err), "warn");
-      setAgentBadge("ERROR", "#f43f5e");
-      console.error("[PUB AGENT ERROR]", err);
-    }
-    agentRunning = false;
-  }
-}
-
-async function pollForEscrowAndRelease(inventoryId, publisherAddr) {
-  const MAX_POLLS = 60;
-  let   polls     = 0;
-
-  async function checkEscrow() {
-    if (polls >= MAX_POLLS) {
-      agentLog("Timed out waiting for escrow (8 min). Run advertiser page.", "warn");
-      setAgentBadge("TIMED OUT", "#f59e0b");
-      agentRunning = false;
-      return;
-    }
-    polls++;
-    try {
-      const lastId = await settlement.lastEscrowId();
-      if (lastId && lastId !== ethers.ZeroHash) {
-        const escrow = await settlement.escrows(lastId);
-        if (escrow.publisherAddr &&
-            escrow.publisherAddr.toLowerCase() === publisherAddr.toLowerCase() &&
-            Number(escrow.status) === 0) {
-
-          agentLog("Escrow detected! ID: " + lastId.slice(0,14) + "…", "success");
-          agentLog("Amount: " + parseFloat(ethers.formatEther(escrow.amount)).toFixed(4) + " OG", "success");
-          setAgentBadge("RELEASING", "#22d3a5");
-
-          agentLog("Step 4 — auto-releasing payment…", "info");
           try {
-            const relTx = await settlement.releasePayment(lastId);
-            agentLog("TX sent: " + relTx.hash.slice(0,18) + "…", "tx");
-            showToast("Payment Released", relTx.hash);
-            const relReceipt = await relTx.wait();
-            agentLog("Payment released! Block " + relReceipt.blockNumber, "success");
-            setAgentBadge("COMPLETE ✓", "#22d3a5");
+            const addr = await signer.getAddress();
 
-            try {
-              const balWei = await provider.getBalance(publisherAddr);
-              const balOG  = parseFloat(ethers.formatEther(balWei)).toFixed(3);
-              const balEl  = document.getElementById("cb-balance");
-              if (balEl) balEl.textContent = balOG + " OG";
-              updateWalletUI(true, publisherAddr, balOG + " OG");
-            } catch(e) {}
+            agentLog("Step 1 — checking registration…", "info");
+            let publisherId = await registry.addressToAgentId(addr);
 
-            agentLog("Full cycle complete: List → Bid → Escrow → Release", "success");
-            agentRunning = false;
-            return;
-          } catch(relErr) {
-            if (relErr.code === 4001 || (relErr.message && relErr.message.includes("user rejected"))) {
-              agentLog("Release rejected by user — retrying next poll", "warn");
+            if (!publisherId || publisherId === ethers.ZeroHash) {
+              agentLog("Not registered. Sending registerAgent TX…", "info");
+              setAgentBadge("REGISTERING", "#9b59ff");
+              const cid = "orvixa-publisher-" + Date.now();
+              let txId = null;
+              try { txId = await registry.registerAgent.staticCall(cid); } catch (e) { }
+              const tx = await registry.registerAgent(cid);
+              agentLog("TX sent: " + tx.hash.slice(0, 18) + "…", "tx");
+              showToast("Registering Publisher", tx.hash);
+              const receipt = await tx.wait();
+              agentLog("Confirmed block " + receipt.blockNumber, "success");
+
+              if (!txId || txId === ethers.ZeroHash) {
+                for (const log of receipt.logs) {
+                  if (log.topics && log.topics.length >= 2 &&
+                    log.address.toLowerCase() === REGISTRY_ADDRESS.toLowerCase()) {
+                    txId = log.topics[1]; break;
+                  }
+                }
+              }
+              if (!txId || txId === ethers.ZeroHash) {
+                await new Promise(r => setTimeout(r, 3000));
+                txId = await registry.addressToAgentId(addr);
+              }
+              publisherId = txId;
+              await setPublisherUI(publisherId);
+              agentLog("Registered! ID: " + publisherId.slice(0, 10) + "…", "success");
             } else {
-              agentLog("Release failed: " + (relErr.reason || relErr.message), "warn");
+              await setPublisherUI(publisherId);
+              agentLog("Already registered: " + publisherId.slice(0, 10) + "…", "success");
             }
+
+            agentLog("Step 2 — listing ad inventory…", "info");
+            setAgentBadge("LISTING", "#9b59ff");
+
+            const slotName = "orvixa-demo-slot-" + Date.now();
+            const ts = Date.now();
+            const inventoryId = ethers.keccak256(ethers.toUtf8Bytes(slotName + "-" + ts));
+            const storageHash = "orvixa-storage-" + slotName + "-" + ts;
+            const basePriceWei = ethers.parseEther(AGENT_BID_OG);
+
+            const listTx = await auction.listInventory(inventoryId, publisherId, storageHash, basePriceWei);
+            agentLog("TX sent: " + listTx.hash.slice(0, 18) + "…", "tx");
+            showToast("Inventory Listed", listTx.hash);
+            const listReceipt = await listTx.wait();
+            agentLog("Inventory confirmed block " + listReceipt.blockNumber, "success");
+            agentLog("Inventory ID: " + inventoryId.slice(0, 18) + "…", "success");
+
+            localStorage.setItem("orvixa_inventoryId", inventoryId);
+            localStorage.setItem("orvixa_publisherAddr", addr);
+            localStorage.setItem("orvixa_publisherId", publisherId);
+            localStorage.setItem("orvixa_listedAt", Date.now().toString());
+            agentLog("Wrote inventoryId to localStorage for Advertiser", "info");
+
+            agentLog("Step 3 — polling for escrow lock (every 8s)…", "info");
+            setAgentBadge("WAITING ESCROW", "#f59e0b");
+            await pollForEscrowAndRelease(inventoryId, addr);
+
+          } catch (err) {
+            if (err.code === 4001 || (err.message && err.message.includes("user rejected"))) {
+              agentLog("User rejected TX — agent paused", "warn");
+              setAgentBadge("PAUSED", "#f59e0b");
+            } else {
+              agentLog("ERROR: " + (err.reason || err.message || err), "warn");
+              setAgentBadge("ERROR", "#f43f5e");
+              console.error("[PUB AGENT ERROR]", err);
+            }
+            agentRunning = false;
           }
         }
-      }
-      agentLog("Poll " + polls + "/" + MAX_POLLS + " — no escrow yet, next in 8s…", "info");
-    } catch(pollErr) {
-      agentLog("Poll error: " + pollErr.message + " — retrying", "warn");
-    }
-    escrowPollTimer = setTimeout(checkEscrow, 8000);
-  }
 
-  await checkEscrow();
-}
+        async function pollForEscrowAndRelease(inventoryId, publisherAddr) {
+          const MAX_POLLS = 60;
+          let polls = 0;
 
-const _origConnectWallet = connectWallet;
-async function connectWalletAndStartAgent() {
-  await _origConnectWallet();
-  if (signer) {
-    setTimeout(() => runPublisherAgent(), 1500);
-  }
-}
+          async function checkEscrow() {
+            if (polls >= MAX_POLLS) {
+              agentLog("Timed out waiting for escrow (8 min). Run advertiser page.", "warn");
+              setAgentBadge("TIMED OUT", "#f59e0b");
+              agentRunning = false;
+              return;
+            }
+            polls++;
+            try {
+              const lastId = await settlement.lastEscrowId();
+              if (lastId && lastId !== ethers.ZeroHash) {
+                const escrow = await settlement.escrows(lastId);
+                if (escrow.publisherAddr &&
+                  escrow.publisherAddr.toLowerCase() === publisherAddr.toLowerCase() &&
+                  Number(escrow.status) === 0) {
 
-window.addEventListener("load", function() {
-  const btn = document.getElementById("connect-wallet-btn");
-  if (btn) btn.addEventListener("click", connectWalletAndStartAgent);
-  if (window.ethereum) {
-    window.ethereum.request({ method: "eth_accounts" }).then(function(accounts) {
-      if (accounts.length > 0) connectWalletAndStartAgent();
-    });
-    window.ethereum.on("accountsChanged", function(){ connectWalletAndStartAgent(); });
-    window.ethereum.on("chainChanged",    function(){ window.location.reload(); });
-  }
-});
+                  agentLog("Escrow detected! ID: " + lastId.slice(0, 14) + "…", "success");
+                  agentLog("Amount: " + parseFloat(ethers.formatEther(escrow.amount)).toFixed(4) + " OG", "success");
+                  setAgentBadge("RELEASING", "#22d3a5");
 
-window.handleRegisterPublisher = handleRegisterPublisher;
-window.handleListInventory     = handleListInventory;
-window.handleReleasePayment    = handleReleasePayment;
-window.connectWallet           = connectWalletAndStartAgent;
-window.runPublisherAgent       = runPublisherAgent;
-window.toggleDropdown        = toggleDropdown;
-window.disconnectWalletUI    = disconnectWalletUI;
+                  agentLog("Step 4 — auto-releasing payment…", "info");
+                  try {
+                    const relTx = await settlement.releasePayment(lastId);
+                    agentLog("TX sent: " + relTx.hash.slice(0, 18) + "…", "tx");
+                    showToast("Payment Released", relTx.hash);
+                    const relReceipt = await relTx.wait();
+                    agentLog("Payment released! Block " + relReceipt.blockNumber, "success");
+                    setAgentBadge("COMPLETE ✓", "#22d3a5");
 
-} // end ethers guard
-</script>
-</div>
+                    try {
+                      const balWei = await provider.getBalance(publisherAddr);
+                      const balOG = parseFloat(ethers.formatEther(balWei)).toFixed(3);
+                      const balEl = document.getElementById("cb-balance");
+                      if (balEl) balEl.textContent = balOG + " OG";
+                      updateWalletUI(true, publisherAddr, balOG + " OG");
+                    } catch (e) { }
+
+                    agentLog("Full cycle complete: List → Bid → Escrow → Release", "success");
+                    agentRunning = false;
+                    return;
+                  } catch (relErr) {
+                    if (relErr.code === 4001 || (relErr.message && relErr.message.includes("user rejected"))) {
+                      agentLog("Release rejected by user — retrying next poll", "warn");
+                    } else {
+                      agentLog("Release failed: " + (relErr.reason || relErr.message), "warn");
+                    }
+                  }
+                }
+              }
+              agentLog("Poll " + polls + "/" + MAX_POLLS + " — no escrow yet, next in 8s…", "info");
+            } catch (pollErr) {
+              agentLog("Poll error: " + pollErr.message + " — retrying", "warn");
+            }
+            escrowPollTimer = setTimeout(checkEscrow, 8000);
+          }
+
+          await checkEscrow();
+        }
+
+        window.addEventListener("load", function () {
+          const btn = document.getElementById("connect-wallet-btn");
+          if (btn) btn.addEventListener("click", connectWallet);
+          if (window.ethereum) {
+            window.ethereum.request({ method: "eth_accounts" }).then(function (accounts) {
+              if (accounts.length > 0) connectWallet();
+            });
+            window.ethereum.on("accountsChanged", function () { connectWallet(); });
+            window.ethereum.on("chainChanged", function () { window.location.reload(); });
+          }
+        });
+
+        window.handleRegisterPublisher = handleRegisterPublisher;
+        window.handleListInventory = handleListInventory;
+        window.handleReleasePayment = handleReleasePayment;
+        window.connectWallet = connectWallet;
+        window.runPublisherAgent = runPublisherAgent;
+        window.toggleDropdown = toggleDropdown;
+        window.disconnectWalletUI = disconnectWalletUI;
+
+      } // end ethers guard
+    </script>
+  </div>
 </body>
+
 </html>
