@@ -1,8 +1,8 @@
-# Deploy to Vercel — Quick Start
+ Deploy to Vercel — Quick Start
 
-## 5-Minute Deployment
+ 5-Minute Deployment
 
-### Step 1 — Download deployment files
+ Step 1 — Download deployment files
 
 From Claude outputs, download:
 - `vercel.json`
@@ -11,21 +11,21 @@ From Claude outputs, download:
 - `DEPLOY_VERCEL.md` (full guide with troubleshooting)
 - `public_index.html` (rename to `public/index.html`)
 
-### Step 2 — Folder structure
+Step 2 — Folder structure
 
 ```
 orvixa/
-├── vercel.json                    ✅ 
-├── package.json                   ✅
-├── .gitignore                     ✅
-├── README.md                      ✅ (copy from outputs)
+├── vercel.json                     
+├── package.json                   
+├── .gitignore                     
+├── README.md                       (copy from outputs)
 ├── public/
-│   ├── index.html                 ✅ (rename public_index.html)
-│   ├── orvixa_advertiser_web3.html    ✅
-│   └── orvixa_publisher_web3.html     ✅
+│   ├── index.html                  (rename public_index.html)
+│   ├── orvixa_advertiser_web3.html    
+│   └── orvixa_publisher_web3.html     
 ```
 
-### Step 3 — Push to GitHub
+ Step 3 — Push to GitHub
 
 ```bash
 cd orvixa
@@ -37,18 +37,18 @@ git branch -M main
 git push -u origin main
 ```
 
-### Step 4 — Deploy to Vercel
+ Step 4 — Deploy to Vercel
 
-**Option A: Via Vercel Dashboard (easiest)**
+Option A: Via Vercel Dashboard (easiest)
 
 1. Go to https://vercel.com/new
 2. Click "Import Git Repository"
 3. Paste your GitHub repo URL
 4. Click "Import"
 5. Click "Deploy"
-6. Wait 30 seconds — done! ✅
+6. Wait 30 seconds — done! 
 
-**Option B: Via Vercel CLI**
+Option B: Via Vercel CLI
 
 ```bash
 npm install -g vercel
@@ -58,18 +58,18 @@ vercel --prod
 
 ---
 
-## You Get
+ You Get
 
 ```
-✅ Live URL: https://orvixa-XXXXX.vercel.app
-✅ Auto-HTTPS
-✅ Global CDN
-✅ Auto-redeploy on git push
+ Live URL: https://orvixa-XXXXX.vercel.app
+ Auto-HTTPS
+ Global CDN
+ Auto-redeploy on git push
 ```
 
 ---
 
-## Test It
+ Test It
 
 ```
 Publisher: https://orvixa-XXXXX.vercel.app/orvixa_publisher_web3.html
@@ -79,7 +79,7 @@ Home: https://orvixa-XXXXX.vercel.app/
 
 ---
 
-## Use This URL for HackQuest
+ Use This URL for HackQuest
 
 You can submit the Vercel URL to judges:
 
@@ -92,17 +92,17 @@ Judges can test it live without running locally.
 
 ---
 
-## Troubleshooting
+ Troubleshooting
 
-**MetaMask doesn't inject?**
+MetaMask doesn't inject?
 - Make sure you're on HTTPS (Vercel auto-enables)
 - Reload the page
 
-**Can't connect to 0G Chain?**
+Can't connect to 0G Chain?
 - Check you're on mainnet (Chain 16661)
 - Make sure you have OG tokens for gas
 
-**localStorage not working?**
+localStorage not working?
 - Try opening the two tabs in the same browser window
 - Clear browser cache if stuck
 
