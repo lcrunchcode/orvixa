@@ -77,10 +77,10 @@ After Deployment
 You'll Get
 
 ```
-✅ Live URL: https://orvixa-XXXXX.vercel.app
-✅ SSL/TLS: automatic
-✅ CDN: global
-✅ Live Deployments: https://vercel.com/dashboard
+ Live URL: https://orvixa-XXXXX.vercel.app
+ SSL/TLS: automatic
+ CDN: global
+ Live Deployments: https://vercel.com/dashboard
 ```
 
 Test It
@@ -125,7 +125,7 @@ Environment Variables (if needed in future)
 Create `.env.local` (not checked into Git):
 
 ```
-# Vercel will ignore this automatically, but keep it for local dev
+Vercel will ignore this automatically, but keep it for local dev
 NEXT_PUBLIC_REGISTRY_ADDRESS=0x4B785db8De522cc3d7Fb4F191B9368Cc1197B742
 NEXT_PUBLIC_AUCTION_ADDRESS=0x108274F7151BA879A03D5b1Fe525745Cf71695fF
 NEXT_PUBLIC_SETTLEMENT_ADDRESS=0x555b3d16810Bfbd0Da5dFBFF4E07B576f4EDd3d1
