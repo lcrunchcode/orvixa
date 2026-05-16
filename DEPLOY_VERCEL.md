@@ -1,25 +1,28 @@
-# Deploy Orvixa to Vercel
+ Deploy Orvixa to Vercel
 
-## Quick Start
+ Quick Start
 
-### 1. Folder Structure
+ 1. Folder Structure
 
 ```
 orvixa/
-├── vercel.json                    ✅ already generated
-├── package.json                   ✅ already generated
-├── .gitignore                     ✅ already generated
-├── README.md                      ✅ download from Claude outputs
-├── SUBMISSION_CHECKLIST.md        ✅ download from Claude outputs
-├── PROJECT_INTRO.md               ✅ download from Claude outputs
+├── vercel.json                    
+├── package.json                   
+├── .gitignore                     
+├── README.md                      
+├── SUBMISSION_CHECKLIST.md        
+├── PROJECT_INTRO.md               
 ├── public/
-│   ├── orvixa_advertiser_web3.html    ✅ download from Claude outputs
-│   ├── orvixa_publisher_web3.html     ✅ download from Claude outputs
-│   └── index.html                     (optional: create below)
+│   ├── orvixa_advertiser_web3.html
+│   ├── favicon.oco
+│   ├── orvixa_publisher_web3.html     
+│   └── index.html
+│
+│                    (optional: create below)
 └── .git/                          (after git init)
 ```
 
-### 2. Create public/index.html (optional — redirects to publisher)
+ 2. Create public/index.html (optional — redirects to publisher)
 
 ```html
 <!DOCTYPE html>
@@ -35,9 +38,9 @@ orvixa/
 </html>
 ```
 
-### 3. Deploy
+3. Deploy
 
-#### Option A: Via Vercel CLI (recommended)
+ Option A: Via Vercel CLI (recommended)
 
 ```bash
 npm install -g vercel
@@ -45,7 +48,7 @@ vercel login
 vercel --prod
 ```
 
-#### Option B: Via GitHub + Vercel Dashboard
+Option B: Via GitHub + Vercel Dashboard
 
 1. Push to GitHub:
 ```bash
@@ -61,7 +64,7 @@ git push -u origin main
 3. Import your GitHub repo
 4. Click "Deploy" — Vercel auto-detects the setup
 
-#### Option C: Drag & Drop (fastest, but no Git history)
+Option C: Drag & Drop (fastest, but no Git history)
 
 1. Go to https://vercel.com/new
 2. Drag the entire `orvixa/` folder to Vercel
@@ -69,9 +72,9 @@ git push -u origin main
 
 ---
 
-## After Deployment
+After Deployment
 
-### You'll Get
+You'll Get
 
 ```
 ✅ Live URL: https://orvixa-XXXXX.vercel.app
@@ -80,31 +83,31 @@ git push -u origin main
 ✅ Live Deployments: https://vercel.com/dashboard
 ```
 
-### Test It
+Test It
 
 ```bash
-# Publisher
+ Publisher
 https://orvixa-XXXXX.vercel.app/orvixa_publisher_web3.html
 
-# Advertiser
+ Advertiser
 https://orvixa-XXXXX.vercel.app/orvixa_advertiser_web3.html
 
-# Index (optional redirect)
+ Index (optional redirect)
 https://orvixa-XXXXX.vercel.app/
 ```
 
 ---
 
-## Important Notes
+ Important Notes
 
-### ✅ What Works Out of the Box
+ What Works Out of the Box
 
 - ethers.js loads from CDN — no bundling needed
 - MetaMask inject works on Vercel — HTTPS required ✓ (Vercel auto-enables)
 - localStorage works — browsers support it
 - Both dashboards are pure client-side — no backend needed
 
-### ⚠️ Common Issues
+ Common Issues
 
 **Issue:** MetaMask doesn't inject
 **Fix:** Vercel is HTTPS by default — this is required. If you're on `http://localhost:8080` (local testing), MetaMask won't inject. Use Vercel URL (HTTPS) or `vercel dev` for local testing with HTTPS.
@@ -117,7 +120,7 @@ https://orvixa-XXXXX.vercel.app/
 
 ---
 
-## Environment Variables (if needed in future)
+Environment Variables (if needed in future)
 
 Create `.env.local` (not checked into Git):
 
@@ -134,7 +137,7 @@ For now, addresses are hardcoded in the HTML files — fine for a hackathon.
 
 ---
 
-## Custom Domain (optional)
+Custom Domain (optional)
 
 After deployment:
 
@@ -145,7 +148,7 @@ After deployment:
 
 ---
 
-## Git Deployment (Recommended for HackQuest)
+Git Deployment (Recommended for HackQuest)
 
 ```bash
 # Initialize repo
@@ -163,18 +166,18 @@ git push -u origin main
 
 ---
 
-## Vercel Dashboard Tips
+Vercel Dashboard Tips
 
-- **Deployments:** See live/preview/production
-- **Analytics:** Traffic, response times
-- **Functions:** If you add serverless functions later
-- **Environment:** Manage env vars
-- **Domains:** Connect custom domains
-- **Settings:** Build, deploy, security
+- Deployments:See live/preview/production
+- Analytics:Traffic, response times
+- Functions:If you add serverless functions later
+- Environment:Manage env vars
+- Domains:Connect custom domains
+- Settings:Build, deploy, security
 
 ---
 
-## Rollback (if needed)
+Rollback (if needed)
 
 On Vercel Dashboard:
 1. Deployments tab
@@ -184,7 +187,7 @@ On Vercel Dashboard:
 
 ---
 
-## Final Checklist Before Submitting
+ Final Checklist Before Submitting
 
 - [ ] Vercel URL works: `https://orvixa-XXXXX.vercel.app/orvixa_publisher_web3.html`
 - [ ] MetaMask injects (check console for no errors)
@@ -197,7 +200,7 @@ On Vercel Dashboard:
 
 ---
 
-## If You Use Vercel URL for HackQuest
+If You Use Vercel URL for HackQuest
 
 Instead of GitHub Pages, you can submit the live Vercel URL:
 
@@ -206,4 +209,4 @@ GitHub Repo: https://github.com/YOUR_USERNAME/orvixa
 Live Demo: https://orvixa-XXXXX.vercel.app/orvixa_publisher_web3.html
 ```
 
-Judges can test it live without running locally. ✨
+Judges can test it live without running locally. 
