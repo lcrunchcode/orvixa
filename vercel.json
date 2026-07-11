@@ -1,7 +1,6 @@
 {
   "version": 2,
   "name": "orvixa",
-  "public": true,
   "builds": [
     {
       "src": "public/**",
