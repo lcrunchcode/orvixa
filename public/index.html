@@ -3,17 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <head>
   <link rel="icon" href="/favicon.png" type="image/png" />
-  </head>
   <meta name="description" content="Orvixa — Autonomous Ad Marketplace on 0G Chain">
   <title>Orvixa</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #07070d 0%, #0d0d1a 100%);
-      color: #f0edff;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+      background: #000000;
+      color: #f5f5f7;
       min-height: 100vh;
       display: flex;
       align-items: center;
@@ -26,16 +24,14 @@
     }
     h1 {
       font-size: 48px;
-      font-weight: 800;
+      font-weight: 700;
+      letter-spacing: -0.02em;
       margin-bottom: 20px;
-      background: linear-gradient(135deg, #9b59ff, #22d3a5);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: #f5f5f7;
     }
     .subtitle {
       font-size: 18px;
-      color: #9490b8;
+      color: #98989d;
       margin-bottom: 40px;
       line-height: 1.6;
     }
@@ -49,45 +45,44 @@
     a {
       display: inline-block;
       padding: 14px 32px;
-      border-radius: 6px;
-      font-weight: 700;
+      border-radius: 10px;
+      font-weight: 600;
       text-decoration: none;
       font-size: 14px;
-      letter-spacing: 0.8px;
-      transition: all 0.3s;
+      letter-spacing: 0.2px;
+      transition: all 0.2s ease;
       cursor: pointer;
     }
     .btn-primary {
-      background: linear-gradient(135deg, #7b2fff, #9b59ff);
+      background: #0a84ff;
       color: white;
-      box-shadow: 0 0 20px rgba(123,47,255,0.3);
     }
     .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 0 30px rgba(123,47,255,0.5);
+      background: #409cff;
     }
     .btn-secondary {
       background: transparent;
-      border: 1px solid rgba(123,47,255,0.4);
-      color: #9b59ff;
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #0a84ff;
     }
     .btn-secondary:hover {
-      border-color: #9b59ff;
-      background: rgba(123,47,255,0.1);
+      border-color: #0a84ff;
+      background: rgba(10,132,255,0.1);
     }
     .features {
       text-align: left;
-      background: rgba(17,17,39,0.5);
-      border: 1px solid rgba(123,47,255,0.2);
-      border-radius: 8px;
+      background: #1c1c1e;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
       padding: 32px;
       margin-bottom: 40px;
     }
     .features h3 {
-      font-size: 14px;
-      color: #9490b8;
+      font-size: 13px;
+      color: #98989d;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 0.6px;
+      font-weight: 600;
       margin-bottom: 16px;
     }
     .feature-list {
@@ -98,19 +93,19 @@
       display: flex;
       gap: 12px;
       font-size: 14px;
-      color: #f0edff;
+      color: #f5f5f7;
     }
     .feature-icon {
-      color: #22d3a5;
-      font-weight: 800;
+      color: #30d158;
+      font-weight: 700;
       flex-shrink: 0;
     }
     .footer {
       font-size: 12px;
-      color: #5a5780;
+      color: #636366;
     }
     .footer a {
-      color: #9b59ff;
+      color: #0a84ff;
       text-decoration: none;
       padding: 0;
       display: inline;
@@ -126,7 +121,7 @@
     <div class="subtitle">
       Autonomous Ad Marketplace on 0G Chain
       <br>
-      <span style="font-size:14px;color:#5a5780">No intermediaries. No fees. Fully verifiable.</span>
+      <span style="font-size:14px;color:#636366">No intermediaries. No fees. Fully verifiable.</span>
     </div>
 
     <div class="buttons">
